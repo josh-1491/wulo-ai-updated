@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Your Library — Pheli AI</title>
+<meta name="description" content="Every video and image you've generated with Pheli AI, saved to your account." />
+<style>
+  :root {
+    --ground: #000000; --surface: #17191f; --surface-raised: #1d1f26;
+    --ink: #f2f3f6; --ink-soft: #9aa1b2; --ink-faint: #6b7284;
+    --line: #2a2e3b; --line-soft: #23262f;
+    --accent: #e3a15c; --accent-ink: #1a1206; --accent-soft: rgba(227, 161, 92, 0.14); --accent-soft-line: rgba(227, 161, 92, 0.32);
+    --shadow: 220 30% 5%;
+    --serif: ui-serif, Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  img, svg { display: block; max-width: 100%; }
+  ::selection { background: var(--accent-soft); color: var(--ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+  button { font: inherit; }
+
+  .nav { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--ground) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line-soft); }
+  .nav-row { max-width: 64rem; margin: 0 auto; padding: 0.95rem 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .brand { display: flex; align-items: center; gap: 0.55rem; text-decoration: none; }
+  .brand-mark { width: 24px; height: 20px; color: #ffffff; flex: none; }
+  .back-link { font-family: var(--sans); font-size: 0.85rem; color: var(--ink-soft); text-decoration: none; }
+  .back-link:hover { color: var(--ink); }
+  .nav-actions { display: flex; align-items: center; gap: 1rem; }
+  .nav-signin { font-family: var(--sans); font-size: 0.85rem; color: var(--ink-soft); text-decoration: none; }
+  .nav-account { display: none; align-items: center; gap: 0.6rem; font-size: 0.85rem; color: var(--ink-soft); }
+  .nav-account.is-visible { display: flex; }
+  .nav-account-name { color: var(--ink); font-weight: 600; }
+  .nav-logout { background: none; border: none; color: var(--ink-faint); font-family: var(--sans); font-size: 0.8rem; cursor: pointer; padding: 0; text-decoration: underline; }
+  .nav-logout:hover { color: var(--ink); }
+
+  .wrap { max-width: 64rem; margin: 0 auto; padding: 3.5rem 1.5rem 5rem; }
+  .eyebrow { font-family: var(--sans); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin: 0 0 0.9rem; }
+  h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(1.9rem, 1.5rem + 2vw, 2.5rem); line-height: 1.12; margin: 0 0 1rem; text-wrap: balance; }
+  .lede { font-size: 1.02rem; line-height: 1.6; color: var(--ink-soft); margin: 0 0 2rem; max-width: 38rem; }
+
+  .filter-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.8rem; }
+  .chip { font-family: var(--sans); font-size: 0.82rem; font-weight: 500; padding: 0.45rem 0.85rem; border-radius: 999px; border: 1px solid var(--line); background: var(--surface-raised); color: var(--ink-soft); cursor: pointer; }
+  .chip:hover { border-color: var(--accent-soft-line); color: var(--ink); }
+  .chip[data-active="true"] { background: var(--accent-soft); border-color: var(--accent-soft-line); color: var(--accent); }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-family: var(--sans); font-weight: 700; font-size: 0.88rem; border-radius: 10px; padding: 0.65rem 1.1rem; text-decoration: none; border: none; cursor: pointer; }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-primary:hover { filter: brightness(1.05); }
+  .btn-ghost { background: var(--surface-raised); color: var(--ink); border: 1px solid var(--line); }
+  .btn-ghost:hover { background: var(--surface); }
+
+  .status { font-family: var(--mono); font-size: 0.85rem; color: var(--ink-faint); }
+  .loading-dots { display: inline-flex; gap: 3px; margin-left: 3px; vertical-align: middle; }
+  .loading-dots span { width: 4px; height: 4px; border-radius: 50%; background: currentColor; animation: dot-pulse 1.4s ease-in-out infinite; opacity: 0.2; }
+  .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes dot-pulse { 0%, 80%, 100% { opacity: 0.2; transform: scale(0.85); } 40% { opacity: 1; transform: scale(1); } }
+  @media (prefers-reduced-motion: reduce) { .loading-dots span { animation: none; opacity: 0.7; } }
+  .error { font-family: var(--sans); font-size: 0.9rem; color: #e0857a; }
+  .empty-state, .signedout-state { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 2.4rem 1.8rem; text-align: center; color: var(--ink-soft); }
+  .empty-state a, .signedout-state .btn { margin-top: 1rem; }
+
+  .library-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 1.2rem; }
+  .library-card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; }
+  .library-media { position: relative; background: #0c0d12; }
+  .library-media img, .library-media video { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+  .library-kind { position: absolute; left: 0.6rem; top: 0.6rem; font-family: var(--mono); font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.04em; color: #fff; background: rgba(9, 11, 16, 0.6); padding: 0.2rem 0.5rem; border-radius: 5px; }
+  .library-body { padding: 0.9rem 1rem 1rem; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+  .library-prompt { font-family: var(--serif); font-size: 0.88rem; line-height: 1.4; color: var(--ink); margin: 0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .library-meta { font-family: var(--mono); font-size: 0.7rem; color: var(--ink-faint); margin: 0; }
+  .library-actions { display: flex; gap: 0.5rem; margin-top: auto; }
+  .library-actions .btn { flex: 1; padding: 0.5rem 0.6rem; font-size: 0.78rem; }
+  .library-delete { background: none; border: 1px solid var(--line); color: var(--ink-faint); border-radius: 10px; padding: 0.5rem 0.6rem; font-size: 0.78rem; cursor: pointer; }
+  .library-delete:hover { color: #e0857a; border-color: #e0857a; }
+
+  /* ---------------- auth modal (shared pattern with index.html) ---------------- */
+  .auth-overlay { position: fixed; inset: 0; background: rgba(4, 5, 8, 0.7); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 100; padding: 1.5rem; }
+  .auth-overlay.is-open { display: flex; }
+  .auth-modal { width: 100%; max-width: 23rem; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 1.8rem; position: relative; }
+  .auth-close { position: absolute; top: 0.9rem; right: 0.9rem; background: none; border: none; color: var(--ink-faint); cursor: pointer; padding: 0.4rem; line-height: 0; }
+  .auth-close:hover { color: var(--ink); }
+  .auth-tabs { display: flex; gap: 0.3rem; margin-bottom: 1.5rem; background: var(--surface-raised); border-radius: 10px; padding: 0.25rem; }
+  .auth-tab { flex: 1; text-align: center; font-family: var(--sans); font-size: 0.85rem; font-weight: 600; padding: 0.55rem; border-radius: 8px; background: none; border: none; color: var(--ink-soft); cursor: pointer; }
+  .auth-tab[aria-selected="true"] { background: var(--surface); color: var(--ink); }
+  .auth-panel { display: none; }
+  .auth-panel.is-active { display: block; }
+  .auth-title { font-family: var(--serif); font-size: 1.3rem; margin: 0 0 1.2rem; }
+  .auth-field { margin-bottom: 0.9rem; }
+  .auth-field label { display: block; font-family: var(--sans); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.5rem; }
+  .auth-input { width: 100%; font-family: var(--sans); font-size: 0.92rem; color: var(--ink); background: var(--ground); border: 1px solid var(--line); border-radius: 10px; padding: 0.7rem 0.85rem; }
+  .auth-input::placeholder { color: var(--ink-faint); }
+  .auth-submit { width: 100%; margin-top: 0.3rem; }
+  .auth-submit[disabled] { opacity: 0.65; cursor: progress; }
+  .auth-status { font-family: var(--mono); font-size: 0.8rem; color: var(--ink-faint); margin-top: 0.9rem; }
+  .auth-error { font-family: var(--sans); font-size: 0.85rem; color: #e0554b; margin-top: 0.9rem; }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-row">
+    <a class="brand" href="index.html">
+      <svg class="brand-mark" viewBox="0 0 27 22" fill="none" aria-hidden="true">
+        <circle cx="9" cy="11" r="6.5" stroke="currentColor" stroke-width="1.6" />
+        <circle cx="18" cy="11" r="6.5" stroke="currentColor" stroke-width="1.6" />
+      </svg>
+    </a>
+    <div class="nav-actions">
+      <a class="back-link" href="index.html">← Back to Pheli AI</a>
+      <a class="nav-signin" id="navSignInLink" href="#">Sign in</a>
+      <span class="nav-account" id="navAccount">
+        <span class="nav-account-name" id="navAccountName"></span>
+        <button class="nav-logout" id="navLogoutBtn" type="button">Log out</button>
+      </span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="eyebrow">Your account</p>
+  <h1>Your library</h1>
+  <p class="lede">Every video and image you've generated while signed in, saved here — download them again anytime, or clear out the ones you don't need.</p>
+
+  <div class="filter-row" id="libraryFilters" hidden>
+    <span class="chip" data-filter="all" data-active="true">All</span>
+    <span class="chip" data-filter="video" data-active="false">Video</span>
+    <span class="chip" data-filter="image" data-active="false">Image</span>
+  </div>
+
+  <p class="status" id="libraryStatus">Loading<span class="loading-dots"><span></span><span></span><span></span></span></p>
+  <p class="error" id="libraryError" hidden></p>
+
+  <div class="signedout-state" id="librarySignedOut" hidden>
+    <p style="margin:0;">Sign in to see everything you've generated.</p>
+    <button class="btn btn-primary" id="librarySignInBtn" type="button">Sign in</button>
+  </div>
+
+  <div class="empty-state" id="libraryEmpty" hidden>
+    <p style="margin:0;">Nothing here yet.</p>
+    <a class="btn btn-primary" href="index.html#try-it">Go create something</a>
+  </div>
+
+  <div class="library-grid" id="libraryGrid"></div>
+</main>
+
+<div class="auth-overlay" id="authOverlay">
+  <div class="auth-modal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <button class="auth-close" id="authCloseBtn" type="button" aria-label="Close">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <h2 class="auth-title" id="authTitle">Your account</h2>
+    <div class="auth-tabs" role="tablist">
+      <button class="auth-tab" role="tab" aria-selected="true" data-auth-tab="login" type="button">Sign in</button>
+      <button class="auth-tab" role="tab" aria-selected="false" data-auth-tab="signup" type="button">Sign up</button>
+    </div>
+
+    <div class="auth-panel is-active" data-auth-panel="login">
+      <div class="auth-field">
+        <label for="login-email">Email</label>
+        <input class="auth-input" id="login-email" type="email" autocomplete="email" placeholder="you@example.com" />
+      </div>
+      <div class="auth-field">
+        <label for="login-password">Password</label>
+        <input class="auth-input" id="login-password" type="password" autocomplete="current-password" placeholder="••••••••" />
+      </div>
+      <button class="btn btn-primary auth-submit" id="loginSubmit" type="button">Sign in</button>
+      <p class="auth-status" id="loginStatus" hidden></p>
+      <p class="auth-error" id="loginError" hidden></p>
+    </div>
+
+    <div class="auth-panel" data-auth-panel="signup">
+      <div class="auth-field">
+        <label for="signup-name">Name</label>
+        <input class="auth-input" id="signup-name" type="text" autocomplete="name" placeholder="Jamie Lee" />
+      </div>
+      <div class="auth-field">
+        <label for="signup-email">Email</label>
+        <input class="auth-input" id="signup-email" type="email" autocomplete="email" placeholder="you@example.com" />
+      </div>
+      <div class="auth-field">
+        <label for="signup-password">Password</label>
+        <input class="auth-input" id="signup-password" type="password" autocomplete="new-password" placeholder="At least 8 characters" />
+      </div>
+      <button class="btn btn-primary auth-submit" id="signupSubmit" type="button">Create account</button>
+      <p class="auth-status" id="signupStatus" hidden></p>
+      <p class="auth-error" id="signupError" hidden></p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var API_BASE = /^(localhost|127\.0\.0\.1)$/.test(location.hostname)
+    ? 'http://localhost:4000'
+    : 'https://pheli-ai-backend.onrender.com';
+  var AUTH_TOKEN_KEY = 'pheli_auth_token';
+
+  var LOADING_DOTS_HTML = '<span class="loading-dots"><span></span><span></span><span></span></span>';
+  function setStatus(statusEl, errorEl, text) {
+    if (text) { statusEl.hidden = false; statusEl.innerHTML = text.replace(/…$/, '') + LOADING_DOTS_HTML; } else { statusEl.hidden = true; }
+    errorEl.hidden = true;
+  }
+  function setError(statusEl, errorEl, text) {
+    statusEl.hidden = true;
+    errorEl.hidden = false;
+    errorEl.textContent = text;
+  }
+
+  // ---- Auth modal (same backend contract as index.html's) ----
+  var authOverlay = document.getElementById('authOverlay');
+  var authCloseBtn = document.getElementById('authCloseBtn');
+  var authTabs = document.querySelectorAll('.auth-tab');
+  var authPanels = document.querySelectorAll('.auth-panel');
+  var navSignInLink = document.getElementById('navSignInLink');
+  var navAccount = document.getElementById('navAccount');
+  var navAccountName = document.getElementById('navAccountName');
+  var navLogoutBtn = document.getElementById('navLogoutBtn');
+
+  function openAuthModal(tab) {
+    authTabs.forEach(function (t) {
+      var active = t.getAttribute('data-auth-tab') === (tab || 'login');
+      t.setAttribute('aria-selected', String(active));
+    });
+    authPanels.forEach(function (p) {
+      p.classList.toggle('is-active', p.getAttribute('data-auth-panel') === (tab || 'login'));
+    });
+    authOverlay.classList.add('is-open');
+  }
+  function closeAuthModal() { authOverlay.classList.remove('is-open'); }
+
+  authTabs.forEach(function (tab) {
+    tab.addEventListener('click', function () { openAuthModal(tab.getAttribute('data-auth-tab')); });
+  });
+  authCloseBtn.addEventListener('click', closeAuthModal);
+  authOverlay.addEventListener('click', function (e) { if (e.target === authOverlay) closeAuthModal(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeAuthModal(); });
+
+  function showSignedIn(user) {
+    navSignInLink.hidden = true;
+    navAccount.classList.add('is-visible');
+    navAccountName.textContent = user.name || user.email;
+    loadLibrary();
+  }
+  function showSignedOut() {
+    navSignInLink.hidden = false;
+    navAccount.classList.remove('is-visible');
+    document.getElementById('libraryFilters').hidden = true;
+    document.getElementById('libraryEmpty').hidden = true;
+    document.getElementById('libraryGrid').innerHTML = '';
+    setStatus(document.getElementById('libraryStatus'), document.getElementById('libraryError'), null);
+    document.getElementById('librarySignedOut').hidden = false;
+  }
+
+  function restoreSession() {
+    var token = localStorage.getItem(AUTH_TOKEN_KEY);
+    if (!token) { showSignedOut(); return; }
+    fetch(API_BASE + '/api/auth/me', { headers: { Authorization: 'Bearer ' + token } })
+      .then(function (res) { return res.json().then(function (body) { return { ok: res.ok, body: body }; }); })
+      .then(function (result) {
+        if (result.ok) { showSignedIn(result.body.user); } else { localStorage.removeItem(AUTH_TOKEN_KEY); showSignedOut(); }
+      })
+      .catch(function () { showSignedOut(); });
+  }
+
+  navSignInLink.addEventListener('click', function (e) { e.preventDefault(); openAuthModal('login'); });
+  document.getElementById('librarySignInBtn').addEventListener('click', function () { openAuthModal('login'); });
+  navLogoutBtn.addEventListener('click', function () {
+    localStorage.removeItem(AUTH_TOKEN_KEY);
+    showSignedOut();
+  });
+
+  function handleAuthSuccess(body) {
+    localStorage.setItem(AUTH_TOKEN_KEY, body.token);
+    showSignedIn(body.user);
+    closeAuthModal();
+  }
+
+  var loginSubmit = document.getElementById('loginSubmit');
+  var loginStatus = document.getElementById('loginStatus');
+  var loginError = document.getElementById('loginError');
+  loginSubmit.addEventListener('click', function () {
+    var email = document.getElementById('login-email').value.trim();
+    var password = document.getElementById('login-password').value;
+    if (!email || !password) { setError(loginStatus, loginError, 'Enter your email and password.'); return; }
+    loginSubmit.disabled = true;
+    setStatus(loginStatus, loginError, 'Signing in…');
+    fetch(API_BASE + '/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, password: password }),
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (body) {
+        if (body.error) throw new Error(body.error);
+        setStatus(loginStatus, loginError, null);
+        handleAuthSuccess(body);
+      })
+      .catch(function (err) { setError(loginStatus, loginError, err.message || 'Could not reach the backend at ' + API_BASE + ' — is the server running?'); })
+      .finally(function () { loginSubmit.disabled = false; });
+  });
+
+  var signupSubmit = document.getElementById('signupSubmit');
+  var signupStatus = document.getElementById('signupStatus');
+  var signupError = document.getElementById('signupError');
+  signupSubmit.addEventListener('click', function () {
+    var name = document.getElementById('signup-name').value.trim();
+    var email = document.getElementById('signup-email').value.trim();
+    var password = document.getElementById('signup-password').value;
+    if (!email) { setError(signupStatus, signupError, 'Enter your email.'); return; }
+    if (!password || password.length < 8) { setError(signupStatus, signupError, 'Password must be at least 8 characters.'); return; }
+    signupSubmit.disabled = true;
+    setStatus(signupStatus, signupError, 'Creating your account…');
+    fetch(API_BASE + '/api/auth/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name, email: email, password: password }),
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (body) {
+        if (body.error) throw new Error(body.error);
+        setStatus(signupStatus, signupError, null);
+        handleAuthSuccess(body);
+      })
+      .catch(function (err) { setError(signupStatus, signupError, err.message || 'Could not reach the backend at ' + API_BASE + ' — is the server running?'); })
+      .finally(function () { signupSubmit.disabled = false; });
+  });
+
+  // ---- Library ----
+  var allGenerations = [];
+  var activeFilter = 'all';
+  var libraryStatus = document.getElementById('libraryStatus');
+  var libraryError = document.getElementById('libraryError');
+  var libraryGrid = document.getElementById('libraryGrid');
+  var libraryEmpty = document.getElementById('libraryEmpty');
+  var libraryFilters = document.getElementById('libraryFilters');
+  var librarySignedOut = document.getElementById('librarySignedOut');
+
+  document.querySelectorAll('#libraryFilters .chip').forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      document.querySelectorAll('#libraryFilters .chip').forEach(function (c) { c.setAttribute('data-active', 'false'); });
+      chip.setAttribute('data-active', 'true');
+      activeFilter = chip.getAttribute('data-filter');
+      renderLibrary();
+    });
+  });
+
+  function timeAgo(iso) {
+    var date = new Date(iso);
+    return date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+
+  function downloadName(item) {
+    var ext = item.kind === 'video' ? 'mp4' : 'png';
+    return 'pheli-ai-' + item.kind + '-' + item.id.slice(0, 8) + '.' + ext;
+  }
+
+  function renderLibrary() {
+    librarySignedOut.hidden = true;
+    var items = activeFilter === 'all' ? allGenerations : allGenerations.filter(function (g) { return g.kind === activeFilter; });
+    libraryGrid.innerHTML = '';
+    libraryEmpty.hidden = items.length !== 0;
+    items.forEach(function (item) {
+      var card = document.createElement('div');
+      card.className = 'library-card';
+
+      var media = document.createElement('div');
+      media.className = 'library-media';
+      var el = document.createElement(item.kind === 'video' ? 'video' : 'img');
+      el.src = item.dataUri;
+      if (item.kind === 'video') { el.controls = true; el.loop = true; el.playsInline = true; } else { el.alt = item.prompt || 'Generated image'; }
+      var tag = document.createElement('span');
+      tag.className = 'library-kind';
+      tag.textContent = item.kind + (item.model ? ' · ' + item.model : '');
+      media.appendChild(el);
+      media.appendChild(tag);
+
+      var body = document.createElement('div');
+      body.className = 'library-body';
+      var prompt = document.createElement('p');
+      prompt.className = 'library-prompt';
+      prompt.textContent = item.prompt || '(no prompt saved)';
+      prompt.title = item.prompt || '';
+      var meta = document.createElement('p');
+      meta.className = 'library-meta';
+      meta.textContent = timeAgo(item.createdAt);
+
+      var actions = document.createElement('div');
+      actions.className = 'library-actions';
+      var downloadBtn = document.createElement('a');
+      downloadBtn.className = 'btn btn-ghost';
+      downloadBtn.href = item.dataUri;
+      downloadBtn.download = downloadName(item);
+      downloadBtn.textContent = '↓ Download';
+      var deleteBtn = document.createElement('button');
+      deleteBtn.className = 'library-delete';
+      deleteBtn.type = 'button';
+      deleteBtn.textContent = 'Delete';
+      deleteBtn.addEventListener('click', function () { deleteItem(item.id, card); });
+      actions.appendChild(downloadBtn);
+      actions.appendChild(deleteBtn);
+
+      body.appendChild(prompt);
+      body.appendChild(meta);
+      body.appendChild(actions);
+      card.appendChild(media);
+      card.appendChild(body);
+      libraryGrid.appendChild(card);
+    });
+  }
+
+  function deleteItem(id, cardEl) {
+    if (!window.confirm('Delete this from your library? This can\'t be undone.')) return;
+    var token = localStorage.getItem(AUTH_TOKEN_KEY);
+    fetch(API_BASE + '/api/library/' + encodeURIComponent(id), {
+      method: 'DELETE',
+      headers: { Authorization: 'Bearer ' + token },
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (body) {
+        if (body.error) throw new Error(body.error);
+        allGenerations = allGenerations.filter(function (g) { return g.id !== id; });
+        renderLibrary();
+      })
+      .catch(function (err) { setError(libraryStatus, libraryError, err.message || 'Could not delete this.'); });
+  }
+
+  function loadLibrary() {
+    librarySignedOut.hidden = true;
+    setStatus(libraryStatus, libraryError, 'Loading…');
+    var token = localStorage.getItem(AUTH_TOKEN_KEY);
+    fetch(API_BASE + '/api/library', { headers: { Authorization: 'Bearer ' + token } })
+      .then(function (res) { return res.json(); })
+      .then(function (body) {
+        if (body.error) throw new Error(body.error);
+        allGenerations = body.generations || [];
+        setStatus(libraryStatus, libraryError, null);
+        libraryFilters.hidden = allGenerations.length === 0;
+        renderLibrary();
+      })
+      .catch(function (err) {
+        setError(libraryStatus, libraryError, err.message || 'Could not reach the backend at ' + API_BASE + ' — is the server running?');
+      });
+  }
+
+  restoreSession();
+})();
+</script>
+</body>
+</html>

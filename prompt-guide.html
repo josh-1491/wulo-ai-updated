@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Prompt Guide — Pheli AI</title>
+<meta name="description" content="How to write prompts that render well — structure, specificity, and real before/after examples for Pheli AI's ad and story generators." />
+<style>
+  :root {
+    --ground: #000000; --surface: #17191f; --surface-raised: #1d1f26;
+    --ink: #f2f3f6; --ink-soft: #9aa1b2; --ink-faint: #6b7284;
+    --line: #2a2e3b; --line-soft: #23262f;
+    --accent: #e3a15c; --accent-ink: #1a1206; --accent-soft: rgba(227, 161, 92, 0.14); --accent-soft-line: rgba(227, 161, 92, 0.32);
+    --shadow: 220 30% 5%;
+    --serif: ui-serif, Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #000000; --surface: #17191f; --surface-raised: #1d1f26;
+      --ink: #f2f3f6; --ink-soft: #9aa1b2; --ink-faint: #6b7284;
+      --line: #2a2e3b; --line-soft: #23262f;
+      --accent: #e3a15c; --accent-ink: #1a1206;
+      --accent-soft: rgba(227, 161, 92, 0.14); --accent-soft-line: rgba(227, 161, 92, 0.32);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #000000; --surface: #17191f; --surface-raised: #1d1f26;
+    --ink: #f2f3f6; --ink-soft: #9aa1b2; --ink-faint: #6b7284;
+    --line: #2a2e3b; --line-soft: #23262f;
+    --accent: #e3a15c; --accent-ink: #1a1206;
+    --accent-soft: rgba(227, 161, 92, 0.14); --accent-soft-line: rgba(227, 161, 92, 0.32);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  img, svg { display: block; max-width: 100%; }
+  ::selection { background: var(--accent-soft); color: var(--ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+  .nav { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--ground) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line-soft); }
+  .nav-row { max-width: 46rem; margin: 0 auto; padding: 0.95rem 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .brand { display: flex; align-items: center; gap: 0.55rem; text-decoration: none; }
+  .brand-mark { width: 24px; height: 20px; color: #ffffff; flex: none; }
+  .back-link { font-family: var(--sans); font-size: 0.85rem; color: var(--ink-soft); text-decoration: none; display: flex; align-items: center; gap: 0.4rem; }
+  .back-link:hover { color: var(--ink); }
+
+  .wrap { max-width: 46rem; margin: 0 auto; padding: 3.5rem 1.5rem 5rem; }
+  .eyebrow { font-family: var(--sans); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin: 0 0 0.9rem; }
+  h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(1.9rem, 1.5rem + 2vw, 2.7rem); line-height: 1.12; margin: 0 0 1rem; text-wrap: balance; }
+  .lede { font-size: 1.08rem; line-height: 1.6; color: var(--ink-soft); margin: 0 0 3rem; max-width: 38rem; }
+
+  h2 { font-family: var(--serif); font-weight: 500; font-size: 1.5rem; margin: 3rem 0 1rem; }
+  h2:first-of-type { margin-top: 0; }
+  p { font-size: 1rem; line-height: 1.7; color: var(--ink-soft); margin: 0 0 1.1rem; }
+  strong { color: var(--ink); font-weight: 600; }
+  ul, ol { padding-left: 1.3rem; margin: 0 0 1.1rem; }
+  li { font-size: 1rem; line-height: 1.65; color: var(--ink-soft); margin-bottom: 0.5rem; }
+  li::marker { color: var(--accent); }
+  code { font-family: var(--mono); font-size: 0.88em; background: var(--surface-raised); border: 1px solid var(--line-soft); border-radius: 4px; padding: 0.1em 0.4em; color: var(--ink); }
+
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.4rem 0 1.8rem; }
+  @media (max-width: 36rem) { .compare { grid-template-columns: 1fr; } }
+  .compare-card { border-radius: 12px; padding: 1.1rem 1.2rem; border: 1px solid var(--line); background: var(--surface); }
+  .compare-card.bad { border-top: 3px solid #b0473f; }
+  .compare-card.good { border-top: 3px solid var(--accent); }
+  .compare-label { font-family: var(--sans); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.6rem; }
+  .compare-card.bad .compare-label { color: #b0473f; }
+  .compare-card.good .compare-label { color: var(--accent); }
+  .compare-card p { font-family: var(--serif); font-size: 0.98rem; line-height: 1.55; color: var(--ink); margin: 0; }
+
+  .checklist { border: 1px solid var(--line); border-radius: 12px; padding: 1.3rem 1.4rem; background: var(--surface); margin: 1.4rem 0; }
+  .checklist ul { margin: 0; padding: 0; list-style: none; }
+  .checklist li { display: flex; gap: 0.6rem; padding: 0.4rem 0; }
+  .checklist li::before { content: "✓"; color: var(--accent); font-family: var(--mono); font-weight: 700; flex: none; }
+
+  .cta-band { margin-top: 3.5rem; padding: 1.8rem; border-radius: 14px; background: var(--surface-raised); border: 1px solid var(--line-soft); text-align: center; }
+  .cta-band p { margin: 0 0 1rem; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; font-family: var(--sans); font-weight: 600; font-size: 0.9rem; border-radius: 10px; padding: 0.7rem 1.3rem; text-decoration: none; background: var(--accent); color: var(--accent-ink); }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-row">
+    <a class="brand" href="index.html">
+      <svg class="brand-mark" viewBox="0 0 27 22" fill="none" aria-hidden="true">
+        <circle cx="9" cy="11" r="6.5" stroke="currentColor" stroke-width="1.6" />
+        <circle cx="18" cy="11" r="6.5" stroke="currentColor" stroke-width="1.6" />
+      </svg>
+    </a>
+    <a class="back-link" href="index.html#try-it">← Back to Pheli AI</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="eyebrow">Resources</p>
+  <h1>How to write prompts that actually render well</h1>
+  <p class="lede">
+    Pheli AI's ad and story concepts already write a detailed master prompt for you —
+    but if you're editing that prompt, or writing one from scratch, these are the patterns
+    that make the biggest difference in what comes back.
+  </p>
+
+  <h2>1. Name the shot, not just the subject</h2>
+  <p>
+    A text-to-video model has no idea what "cinematic" means on its own — it's inferring
+    tone from concrete details. The fastest upgrade to any prompt is naming a camera angle
+    and a lens the way a cinematographer would: wide shot, close-up, dolly-in, handheld,
+    aerial. "A car driving" is a guess. "A low-angle tracking shot of a car driving through
+    rain-soaked streets at night" is a shot list.
+  </p>
+
+  <div class="compare">
+    <div class="compare-card bad">
+      <div class="compare-label">Vague</div>
+      <p>A person in a kitchen making coffee.</p>
+    </div>
+    <div class="compare-card good">
+      <div class="compare-label">Specific</div>
+      <p>Close-up, handheld: hands grinding coffee beans in a sunlit kitchen, steam rising, morning light through a window behind.</p>
+    </div>
+  </div>
+
+  <h2>2. Lighting and time of day carry more weight than adjectives</h2>
+  <p>
+    "Beautiful" and "stunning" do almost nothing — the model has no fixed idea of what
+    those mean. Lighting direction and quality do a lot more: <em>golden hour</em>,
+    <em>hard overhead light</em>, <em>soft window light</em>, <em>neon reflections on wet
+    pavement</em>. Pair lighting with a specific time of day (dawn, twilight, midday) and
+    the result reads as considered rather than generic.
+  </p>
+
+  <h2>3. Describe motion, not just a static scene</h2>
+  <p>
+    These are video models — a prompt that only describes a still image leaves the motion
+    entirely up to guesswork. Say what moves and how: <code>slow rotating reveal</code>,
+    <code>waves crashing</code>, <code>camera pushing in</code>, <code>steam drifting
+    upward</code>. If nothing in the prompt moves, expect a mostly static shot with
+    incidental camera drift.
+  </p>
+
+  <h2>4. Keep one subject, one consistent look</h2>
+  <p>
+    If a product or character needs to look the same across a longer, multi-segment
+    render (anything using "Continue this clip"), describe it once, precisely, and reuse
+    that exact description rather than re-describing it slightly differently each time —
+    small wording drift between segments is where inconsistency creeps in.
+  </p>
+
+  <h2>5. Say what you don't want</h2>
+  <p>
+    A negative prompt (Pheli AI's ad and story concepts generate one automatically)
+    heads off the most common failure modes: warped hands, flickering, text artifacts,
+    a logo that subtly changes shape. It's the cheapest fix available and it's easy to
+    forget when writing a prompt by hand.
+  </p>
+
+  <div class="checklist">
+    <ul>
+      <li>Named a camera angle or shot type</li>
+      <li>Specified lighting and time of day</li>
+      <li>Described what actually moves</li>
+      <li>Kept the subject's description consistent</li>
+      <li>Added a negative prompt for common artifacts</li>
+    </ul>
+  </div>
+
+  <h2>A full example</h2>
+  <p>
+    Putting it together — this is the level of detail Pheli AI's own concept generator
+    aims for when it writes a master video prompt:
+  </p>
+  <div class="compare">
+    <div class="compare-card good" style="grid-column: 1 / -1;">
+      <div class="compare-label">Full prompt</div>
+      <p>
+        A slow rotating reveal of a matte black gift box on a polished marble surface, soft
+        golden hour light through a nearby window, a satin ribbon slowly unraveling in slow
+        motion, shallow depth of field, 50mm lens, premium minimalist product photography
+        style, no people visible.
+      </p>
+    </div>
+  </div>
+
+  <div class="cta-band">
+    <p>See this in practice — every template on Pheli AI starts from a prompt built this way.</p>
+    <a class="btn" href="index.html#templates">Browse templates</a>
+  </div>
+</main>
+
+</body>
+</html>

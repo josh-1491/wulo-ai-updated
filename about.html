@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>About — Pheli AI</title>
+<meta name="description" content="Pheli AI is an AI-powered video creation platform built to help anyone turn an idea, product, or concept into cinematic video content and compelling advertisements." />
+<style>
+  :root {
+    --ground: #000000; --surface: #17191f; --surface-raised: #1d1f26;
+    --ink: #f2f3f6; --ink-soft: #9aa1b2; --ink-faint: #6b7284;
+    --line: #2a2e3b; --line-soft: #23262f;
+    --accent: #e3a15c; --accent-ink: #1a1206; --accent-soft: rgba(227, 161, 92, 0.14); --accent-soft-line: rgba(227, 161, 92, 0.32);
+    --shadow: 220 30% 5%;
+    --serif: ui-serif, Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #000000; --surface: #17191f; --surface-raised: #1d1f26;
+      --ink: #f2f3f6; --ink-soft: #9aa1b2; --ink-faint: #6b7284;
+      --line: #2a2e3b; --line-soft: #23262f;
+      --accent: #e3a15c; --accent-ink: #1a1206;
+      --accent-soft: rgba(227, 161, 92, 0.14); --accent-soft-line: rgba(227, 161, 92, 0.32);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #000000; --surface: #17191f; --surface-raised: #1d1f26;
+    --ink: #f2f3f6; --ink-soft: #9aa1b2; --ink-faint: #6b7284;
+    --line: #2a2e3b; --line-soft: #23262f;
+    --accent: #e3a15c; --accent-ink: #1a1206;
+    --accent-soft: rgba(227, 161, 92, 0.14); --accent-soft-line: rgba(227, 161, 92, 0.32);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  img, svg { display: block; max-width: 100%; }
+  ::selection { background: var(--accent-soft); color: var(--ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+  .nav { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--ground) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line-soft); }
+  .nav-row { max-width: 46rem; margin: 0 auto; padding: 0.95rem 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .brand { display: flex; align-items: center; gap: 0.55rem; text-decoration: none; }
+  .brand-mark { width: 24px; height: 20px; color: #ffffff; flex: none; }
+  .back-link { font-family: var(--sans); font-size: 0.85rem; color: var(--ink-soft); text-decoration: none; }
+  .back-link:hover { color: var(--ink); }
+
+  .wrap { max-width: 46rem; margin: 0 auto; padding: 3.5rem 1.5rem 5rem; }
+  .eyebrow { font-family: var(--sans); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin: 0 0 0.9rem; }
+  h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(1.9rem, 1.5rem + 2vw, 2.7rem); line-height: 1.12; margin: 0 0 1.1rem; text-wrap: balance; }
+  .tagline { font-family: var(--serif); font-size: clamp(1.3rem, 1.1rem + 1vw, 1.7rem); line-height: 1.4; color: var(--accent); margin: 0 0 1.6rem; text-wrap: balance; }
+
+  h2 { font-family: var(--serif); font-weight: 500; font-size: 1.5rem; margin: 3rem 0 1rem; }
+  h2:first-of-type { margin-top: 0; }
+  p { font-size: 1rem; line-height: 1.7; color: var(--ink-soft); margin: 0 0 1.1rem; }
+  strong { color: var(--ink); font-weight: 600; }
+  ul { padding-left: 1.3rem; margin: 0 0 1.1rem; }
+  li { font-size: 1rem; line-height: 1.65; color: var(--ink-soft); margin-bottom: 0.5rem; }
+  li::marker { color: var(--accent); }
+
+  .closing { border-top: 1px solid var(--line-soft); margin-top: 2.5rem; padding-top: 2rem; }
+  .closing p { font-family: var(--serif); font-size: 1.15rem; color: var(--ink); line-height: 1.6; }
+
+  .contact-band { margin-top: 3rem; padding: 1.8rem; border-radius: 14px; background: var(--surface-raised); border: 1px solid var(--line-soft); }
+  .contact-band h2 { margin-top: 0; }
+  .contact-links { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; font-family: var(--sans); font-weight: 600; font-size: 0.9rem; border-radius: 10px; padding: 0.7rem 1.3rem; text-decoration: none; }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-ghost { background: var(--surface); color: var(--ink); border: 1px solid var(--line); }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-row">
+    <a class="brand" href="index.html">
+      <svg class="brand-mark" viewBox="0 0 27 22" fill="none" aria-hidden="true">
+        <circle cx="9" cy="11" r="6.5" stroke="currentColor" stroke-width="1.6" />
+        <circle cx="18" cy="11" r="6.5" stroke="currentColor" stroke-width="1.6" />
+      </svg>
+    </a>
+    <a class="back-link" href="index.html">← Back to Pheli AI</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="eyebrow">About</p>
+  <h1>About Pheli AI</h1>
+  <p class="tagline">Your Ideas. Cinematic. Infinite.</p>
+
+  <p>
+    Pheli AI is an AI-powered video creation platform built to help anyone turn an idea,
+    product, or concept into cinematic video content and compelling advertisements.
+  </p>
+  <p>
+    Creating professional video traditionally requires cameras, locations, actors, editors,
+    production teams, and significant budgets. Pheli AI makes it possible to bring your
+    vision to life with AI-powered creative tools designed to simplify the entire process.
+  </p>
+
+  <h2>Create Without Limits</h2>
+  <p>
+    Whether you're launching a new product, promoting your business, creating social media
+    content, or developing your next big creative idea, Pheli AI helps you go from
+    concept to cinematic video faster.
+  </p>
+  <p>
+    Simply provide an idea, prompt, product image, or creative direction and Pheli AI
+    can help transform it into engaging visual content.
+  </p>
+
+  <h2>Built for Modern Advertising</h2>
+  <p>Great advertising starts with a great idea.</p>
+  <p>
+    Pheli AI gives marketers, businesses, agencies, entrepreneurs, and creators the
+    ability to experiment with different concepts, visuals, scenes, styles, and messages
+    without the traditional cost and complexity of video production.
+  </p>
+  <p>
+    Create product advertisements, social media campaigns, promotional videos, cinematic
+    brand stories, and more.
+  </p>
+
+  <h2>Your Product. Your Story.</h2>
+  <p>Your products deserve more than a static image.</p>
+  <p>
+    Pheli AI helps turn product photos and creative concepts into dynamic visual
+    experiences designed to capture attention and communicate your brand.
+  </p>
+  <p>
+    From cinematic product shots to scroll-stopping advertisements, Pheli AI gives you
+    the tools to create content that looks and feels made for today's digital world.
+  </p>
+
+  <h2>Creativity at Infinite Speed</h2>
+  <p>
+    We believe the future of content creation is more accessible, more experimental, and
+    more creative.
+  </p>
+  <p>
+    AI gives creators the ability to explore ideas that once required entire production
+    teams. Pheli AI is built to put that power into your hands.
+  </p>
+  <p>Our goal is simple:</p>
+  <p><strong>Make professional-looking video creation accessible to everyone.</strong></p>
+
+  <h2>Built for Creators, Brands &amp; Businesses</h2>
+  <p>Pheli AI can be used by:</p>
+  <ul>
+    <li>Entrepreneurs launching new products</li>
+    <li>E-commerce brands</li>
+    <li>Marketing teams</li>
+    <li>Advertising agencies</li>
+    <li>Social media creators</li>
+    <li>Small businesses</li>
+    <li>Filmmakers and storytellers</li>
+    <li>Creative professionals</li>
+  </ul>
+  <p>
+    Whether you're creating your first advertisement or producing content for an entire
+    campaign, Pheli AI helps you create faster.
+  </p>
+
+  <h2>The Future of Video Is Infinite</h2>
+  <p>
+    We're constantly exploring new ways artificial intelligence can make video creation
+    more powerful, accessible, and creative.
+  </p>
+  <p>The tools will continue to evolve.</p>
+  <p>The possibilities will continue to grow.</p>
+  <p>And your creativity has no limit.</p>
+
+  <div class="closing">
+    <p><strong>Welcome to Pheli AI.</strong></p>
+    <p><strong>Your ideas. Your products. Your stories. Made cinematic.</strong></p>
+  </div>
+
+  <div class="contact-band">
+    <h2 style="margin-top:0;">Contact</h2>
+    <p style="margin-bottom:0;">Have questions, feedback, or ideas? Write us on Instagram or TikTok.</p>
+    <div class="contact-links">
+      <a class="btn btn-primary" href="#">Instagram</a>
+      <a class="btn btn-ghost" href="#">TikTok</a>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Create an AI Influencer — Pheli AI</title>
+<meta name="description" content="Design a consistent AI influencer — name, look, and personality — then generate a reference portrait and bring them to life in video." />
+<style>
+  :root {
+    --ground: #000000; --surface: #17191f; --surface-raised: #1d1f26;
+    --ink: #f2f3f6; --ink-soft: #9aa1b2; --ink-faint: #6b7284;
+    --line: #2a2e3b; --line-soft: #23262f;
+    --accent: #e3a15c; --accent-ink: #1a1206; --accent-soft: rgba(227, 161, 92, 0.14); --accent-soft-line: rgba(227, 161, 92, 0.32);
+    --shadow: 220 30% 5%;
+    --serif: ui-serif, Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  img, svg { display: block; max-width: 100%; }
+  ::selection { background: var(--accent-soft); color: var(--ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+  button { font: inherit; }
+
+  .nav { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--ground) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line-soft); }
+  .nav-row { max-width: 46rem; margin: 0 auto; padding: 0.95rem 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .brand { display: flex; align-items: center; gap: 0.55rem; text-decoration: none; }
+  .brand-mark { width: 24px; height: 20px; color: #ffffff; flex: none; }
+  .back-link { font-family: var(--sans); font-size: 0.85rem; color: var(--ink-soft); text-decoration: none; }
+  .back-link:hover { color: var(--ink); }
+
+  .wrap { max-width: 46rem; margin: 0 auto; padding: 3.5rem 1.5rem 5rem; }
+  .eyebrow { font-family: var(--sans); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin: 0 0 0.9rem; }
+  h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(1.9rem, 1.5rem + 2vw, 2.7rem); line-height: 1.12; margin: 0 0 1rem; text-wrap: balance; }
+  .lede { font-size: 1.05rem; line-height: 1.6; color: var(--ink-soft); margin: 0 0 2.5rem; max-width: 38rem; }
+
+  h2 { font-family: var(--serif); font-weight: 500; font-size: 1.4rem; margin: 0 0 1.2rem; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 1.6rem; margin-bottom: 2rem; }
+
+  .field { margin-bottom: 1.1rem; }
+  .field label { display: block; font-family: var(--sans); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.55rem; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 30rem) { .field-row { grid-template-columns: 1fr; } }
+  .input, .select, .textarea {
+    width: 100%; font-family: var(--sans); font-size: 0.94rem; color: var(--ink); background: var(--surface-raised);
+    border: 1px solid var(--line); border-radius: 10px; padding: 0.7rem 0.85rem;
+  }
+  .textarea { font-family: var(--serif); min-height: 5.5rem; resize: vertical; line-height: 1.5; }
+  .input::placeholder, .textarea::placeholder { color: var(--ink-faint); }
+
+  .chip-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .chip { font-family: var(--sans); font-size: 0.82rem; font-weight: 500; padding: 0.45rem 0.85rem; border-radius: 999px; border: 1px solid var(--line); background: var(--surface-raised); color: var(--ink-soft); cursor: pointer; }
+  .chip:hover { border-color: var(--accent-soft-line); color: var(--ink); }
+  .chip[data-active="true"] { background: var(--accent-soft); border-color: var(--accent-soft-line); color: var(--accent); }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-family: var(--sans); font-weight: 700; font-size: 0.92rem; border-radius: 10px; padding: 0.8rem 1.3rem; text-decoration: none; border: none; cursor: pointer; width: 100%; }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-primary:hover { filter: brightness(1.05); }
+  .btn-primary[disabled] { opacity: 0.65; cursor: progress; }
+  .btn-ghost { background: var(--surface-raised); color: var(--ink); border: 1px solid var(--line); }
+
+  .spin { width: 14px; height: 14px; flex: none; border-radius: 50%; border: 2px solid color-mix(in srgb, currentColor 30%, transparent); border-top-color: currentColor; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .status { font-family: var(--mono); font-size: 0.82rem; color: var(--ink-faint); margin-top: 0.9rem; }
+  .loading-dots { display: inline-flex; gap: 3px; margin-left: 3px; vertical-align: middle; }
+  .loading-dots span { width: 4px; height: 4px; border-radius: 50%; background: currentColor; animation: dot-pulse 1.4s ease-in-out infinite; opacity: 0.2; }
+  .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes dot-pulse { 0%, 80%, 100% { opacity: 0.2; transform: scale(0.85); } 40% { opacity: 1; transform: scale(1); } }
+  @media (prefers-reduced-motion: reduce) { .loading-dots span { animation: none; opacity: 0.7; } }
+  .error { font-family: var(--sans); font-size: 0.85rem; color: #e0857a; margin-top: 0.9rem; }
+
+  .result { margin-top: 1.4rem; display: none; }
+  .result.is-visible { display: block; }
+  .result img, .result video { width: 100%; border-radius: 12px; border: 1px solid var(--line); background: #0c0d12; margin-bottom: 0.9rem; }
+
+  .sheet { background: var(--surface-raised); border: 1px solid var(--line-soft); border-radius: 12px; padding: 1.1rem 1.2rem; margin-top: 1rem; }
+  .sheet-label { font-family: var(--sans); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin: 0 0 0.6rem; display: flex; align-items: center; justify-content: space-between; }
+  .sheet-text { font-family: var(--mono); font-size: 0.82rem; line-height: 1.6; color: var(--ink-soft); margin: 0; white-space: pre-wrap; }
+  .copy-btn { font-family: var(--sans); font-size: 0.72rem; font-weight: 700; color: var(--ink-faint); background: none; border: none; cursor: pointer; }
+  .copy-btn:hover { color: var(--ink); }
+
+  .download-row { display: flex; gap: 0.6rem; }
+  .download-row .btn { flex: 1; }
+
+  .step-num { font-family: var(--mono); font-size: 0.72rem; color: var(--accent); margin-bottom: 0.4rem; }
+
+  .example-card { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-bottom: 2.5rem; }
+  @media (max-width: 30rem) { .example-card { grid-template-columns: 1fr; } }
+  .example-media { border-radius: 14px; overflow: hidden; border: 1px solid var(--line); position: relative; }
+  .example-media img, .example-media video { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; background: #0c0d12; }
+  .example-tag { position: absolute; left: 0.7rem; bottom: 0.7rem; font-family: var(--mono); font-size: 0.66rem; color: #fff; background: rgba(9, 11, 16, 0.55); padding: 0.2rem 0.5rem; border-radius: 5px; }
+  .sound-toggle {
+    position: absolute; right: 0.7rem; bottom: 0.7rem; width: 30px; height: 30px; border-radius: 50%;
+    background: rgba(9, 11, 16, 0.55); border: 1px solid rgba(255, 255, 255, 0.16); color: #fff;
+    display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0;
+  }
+  .sound-toggle:hover { background: rgba(9, 11, 16, 0.75); }
+  .sound-toggle svg { width: 16px; height: 16px; }
+  .sound-toggle .icon-muted { display: block; }
+  .sound-toggle .icon-on { display: none; }
+  .sound-toggle[data-muted="false"] .icon-muted { display: none; }
+  .sound-toggle[data-muted="false"] .icon-on { display: block; }
+  .example-caption { font-family: var(--sans); font-size: 0.8rem; color: var(--ink-faint); text-align: center; margin: -1.5rem 0 2.5rem; }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-row">
+    <a class="brand" href="index.html">
+      <svg class="brand-mark" viewBox="0 0 27 22" fill="none" aria-hidden="true">
+        <circle cx="9" cy="11" r="6.5" stroke="currentColor" stroke-width="1.6" />
+        <circle cx="18" cy="11" r="6.5" stroke="currentColor" stroke-width="1.6" />
+      </svg>
+    </a>
+    <div style="display:flex; align-items:center; gap:1.2rem;">
+      <a class="back-link" href="library.html">My Library</a>
+      <a class="back-link" href="index.html">← Back to Pheli AI</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="eyebrow">AI Influencer</p>
+  <h1>Create your AI influencer</h1>
+  <p class="lede">
+    Define a name, a look, and a personality once — Pheli AI generates a reference
+    portrait you can reuse across every future post, and animates them into video from
+    that same exact reference, so they stay consistent from one generation to the next.
+  </p>
+
+  <div class="example-card">
+    <div class="example-media">
+      <img src="images/ai-influencer-example.png" alt="Example AI influencer portrait" />
+      <span class="example-tag">Portrait</span>
+    </div>
+    <div class="example-media">
+      <video id="inf-example-video" src="videos/ai-influencer-dance.mp4" autoplay muted loop playsinline preload="metadata"></video>
+      <span class="example-tag">8s clip</span>
+      <button class="sound-toggle" id="inf-sound-toggle" type="button" data-muted="true" aria-label="Unmute video">
+        <svg class="icon-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <line x1="23" y1="9" x2="17" y2="15"></line>
+          <line x1="17" y1="9" x2="23" y2="15"></line>
+        </svg>
+        <svg class="icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <p class="example-caption">Example: an entirely original, AI-generated influencer — portrait and dance clip both generated from a text description.</p>
+
+  <div class="card">
+    <p class="step-num">STEP 1</p>
+    <h2>Define your influencer</h2>
+
+    <div class="field">
+      <label for="inf-name">Name</label>
+      <input class="input" id="inf-name" type="text" placeholder="e.g. Mira Chen" value="Mira Chen" />
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="inf-niche">Niche</label>
+        <select class="select" id="inf-niche">
+          <option>Fashion</option>
+          <option>Fitness</option>
+          <option>Tech</option>
+          <option>Travel</option>
+          <option>Beauty</option>
+          <option>Lifestyle</option>
+          <option>Gaming</option>
+          <option>Food</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="inf-model">Model</label>
+        <select class="select" id="inf-model">
+          <option value="gpt-image-1">GPT Image 1</option>
+          <option value="nano-banana-pro">Nano Banana Pro</option>
+          <option value="nano-banana-2">Nano Banana 2</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="inf-appearance">Appearance</label>
+      <textarea class="textarea" id="inf-appearance" placeholder="Hair, eyes, style, age range, distinguishing details…">Late 20s, shoulder-length dark wavy hair, warm brown eyes, soft natural makeup, minimalist gold jewelry, wears relaxed neutral-toned streetwear</textarea>
+    </div>
+
+    <div class="field">
+      <label for="inf-personality">Personality &amp; vibe</label>
+      <input class="input" id="inf-personality" type="text" placeholder="e.g. warm, witty, effortlessly confident" value="Warm, curious, effortlessly confident" />
+    </div>
+
+    <div class="field">
+      <label>Style</label>
+      <div class="chip-row" id="inf-style-row">
+        <span class="chip" data-style="Photoreal" data-active="true">Photoreal</span>
+        <span class="chip" data-style="Illustration">Illustration</span>
+        <span class="chip" data-style="3D render">3D render</span>
+        <span class="chip" data-style="Anime">Anime</span>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" id="inf-generate-portrait" type="button">Generate influencer</button>
+    <p class="status" id="inf-portrait-status" hidden></p>
+    <p class="error" id="inf-portrait-error" hidden></p>
+
+    <div class="result" id="inf-portrait-result">
+      <img id="inf-portrait-output" alt="Generated AI influencer portrait" />
+      <div class="sheet">
+        <p class="sheet-label"><span>Character sheet</span> <button class="copy-btn" id="inf-copy-sheet" type="button">Copy</button></p>
+        <p class="sheet-text" id="inf-sheet-text"></p>
+      </div>
+      <div class="download-row" style="margin-top:0.9rem;">
+        <a class="btn btn-ghost" id="inf-portrait-download" download="ai-influencer-portrait.png">↓ Download portrait</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="step-num">STEP 2</p>
+    <h2>Bring them to life</h2>
+    <div class="field">
+      <label for="inf-scene">What are they doing?</label>
+      <textarea class="textarea" id="inf-scene" placeholder="e.g. talking casually to camera in a bright modern kitchen, gesturing naturally">Talking casually to camera in a bright, modern apartment, gesturing naturally, warm afternoon light</textarea>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="inf-video-model">Video model</label>
+        <select class="select" id="inf-video-model">
+          <option value="sora-2">Sora 2</option>
+          <option value="veo-3">Veo 3</option>
+          <option value="kling-2-5-turbo">Kling 2.5 Turbo</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="inf-seconds">Duration</label>
+        <select class="select" id="inf-seconds">
+          <option value="4">4s</option>
+          <option value="8" selected>8s</option>
+          <option value="12">12s</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn btn-primary" id="inf-generate-video" type="button">Generate video</button>
+    <p class="status" id="inf-video-status" hidden></p>
+    <p class="error" id="inf-video-error" hidden></p>
+    <div class="result" id="inf-video-result">
+      <video id="inf-video-output" controls loop playsinline></video>
+      <div class="download-row">
+        <a class="btn btn-ghost" id="inf-video-download" download="ai-influencer-video.mp4">↓ Download video</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+(function () {
+  var API_BASE = /^(localhost|127\.0\.0\.1)$/.test(location.hostname)
+    ? 'http://localhost:4000'
+    : 'https://pheli-ai-backend.onrender.com';
+  var AUTH_TOKEN_KEY = 'pheli_auth_token';
+  var activeStyle = 'Photoreal';
+  var portraitDataUri = null;
+
+  // Saved to the same account system as the main site (shared localStorage on
+  // this origin) — silently skipped when signed out, same as on index.html.
+  function saveToLibrary(kind, model, prompt, dataUri) {
+    var token = localStorage.getItem(AUTH_TOKEN_KEY);
+    if (!token) return;
+    fetch(API_BASE + '/api/library', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+      body: JSON.stringify({ kind: kind, model: model, prompt: prompt, dataUri: dataUri }),
+    }).catch(function (err) { console.warn('Could not save to library:', err); });
+  }
+
+  var exampleVideo = document.getElementById('inf-example-video');
+  var soundToggle = document.getElementById('inf-sound-toggle');
+  soundToggle.addEventListener('click', function () {
+    exampleVideo.muted = !exampleVideo.muted;
+    soundToggle.setAttribute('data-muted', String(exampleVideo.muted));
+    soundToggle.setAttribute('aria-label', exampleVideo.muted ? 'Unmute video' : 'Mute video');
+  });
+
+  document.querySelectorAll('#inf-style-row .chip').forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      document.querySelectorAll('#inf-style-row .chip').forEach(function (c) { c.setAttribute('data-active', 'false'); });
+      chip.setAttribute('data-active', 'true');
+      activeStyle = chip.getAttribute('data-style');
+    });
+  });
+
+  var LOADING_DOTS_HTML = '<span class="loading-dots"><span></span><span></span><span></span></span>';
+  function setStatus(statusEl, errorEl, text) {
+    if (text) { statusEl.hidden = false; statusEl.innerHTML = text.replace(/…$/, '') + LOADING_DOTS_HTML; } else { statusEl.hidden = true; }
+    errorEl.hidden = true;
+  }
+  function setError(statusEl, errorEl, text) {
+    statusEl.hidden = true;
+    errorEl.hidden = false;
+    errorEl.textContent = text;
+  }
+
+  function characterSheet() {
+    var name = document.getElementById('inf-name').value.trim() || 'Unnamed influencer';
+    var niche = document.getElementById('inf-niche').value;
+    var appearance = document.getElementById('inf-appearance').value.trim();
+    var personality = document.getElementById('inf-personality').value.trim();
+    return name + ' — a ' + niche.toLowerCase() + ' AI influencer. Appearance: ' + appearance + '. Personality: ' + personality + '. Always render this exact appearance consistently.';
+  }
+
+  // ---- Step 1: generate portrait ----
+  var portraitBtn = document.getElementById('inf-generate-portrait');
+  var portraitStatus = document.getElementById('inf-portrait-status');
+  var portraitError = document.getElementById('inf-portrait-error');
+  var portraitResult = document.getElementById('inf-portrait-result');
+  var portraitOutput = document.getElementById('inf-portrait-output');
+  var portraitDownload = document.getElementById('inf-portrait-download');
+  var sheetText = document.getElementById('inf-sheet-text');
+
+  portraitBtn.addEventListener('click', function () {
+    var appearance = document.getElementById('inf-appearance').value.trim();
+    if (!appearance) { setError(portraitStatus, portraitError, 'Describe their appearance first.'); return; }
+    var model = document.getElementById('inf-model').value;
+    var prompt = 'Professional portrait photo of a person, ' + appearance + ', centered composition, plain neutral studio background, shoulders-up framing, natural lighting, consistent reusable character reference shot';
+
+    portraitBtn.disabled = true;
+    portraitResult.classList.remove('is-visible');
+    setStatus(portraitStatus, portraitError, 'Generating…');
+
+    fetch(API_BASE + '/api/image', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: prompt, model: model, style: activeStyle }),
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (body) {
+        if (body.error) throw new Error(body.error);
+        portraitDataUri = body.image;
+        portraitOutput.src = body.image;
+        portraitDownload.href = body.image;
+        sheetText.textContent = characterSheet();
+        portraitResult.classList.add('is-visible');
+        setStatus(portraitStatus, portraitError, null);
+        portraitResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        saveToLibrary('image', model, prompt, body.image);
+      })
+      .catch(function (err) {
+        setError(portraitStatus, portraitError, err.message || 'Could not reach the backend at ' + API_BASE + ' — is the server running?');
+      })
+      .finally(function () {
+        portraitBtn.disabled = false;
+      });
+  });
+
+  document.getElementById('inf-copy-sheet').addEventListener('click', function () {
+    navigator.clipboard.writeText(sheetText.textContent).then(function () {
+      var btn = document.getElementById('inf-copy-sheet');
+      var original = btn.textContent;
+      btn.textContent = 'Copied';
+      setTimeout(function () { btn.textContent = original; }, 1500);
+    });
+  });
+
+  // ---- Step 2: generate video from the portrait ----
+  var videoBtn = document.getElementById('inf-generate-video');
+  var videoStatus = document.getElementById('inf-video-status');
+  var videoError = document.getElementById('inf-video-error');
+  var videoResult = document.getElementById('inf-video-result');
+  var videoOutput = document.getElementById('inf-video-output');
+  var videoDownload = document.getElementById('inf-video-download');
+
+  function pollVideo(id) {
+    return fetch(API_BASE + '/api/video/' + encodeURIComponent(id))
+      .then(function (res) { return res.json(); })
+      .then(function (body) {
+        if (body.status === 'completed') return body;
+        if (body.status === 'failed') throw new Error(body.error || 'Generation failed');
+        var label = body.progressSeconds != null && body.targetSeconds != null
+          ? 'Rendering — ' + body.progressSeconds + 's of ' + body.targetSeconds + 's'
+          : (body.status || 'in_progress').replace('_', ' ');
+        setStatus(videoStatus, videoError, label + '…');
+        return new Promise(function (resolve) { setTimeout(resolve, 4000); }).then(function () { return pollVideo(id); });
+      });
+  }
+
+  videoBtn.addEventListener('click', function () {
+    if (!portraitDataUri) { setError(videoStatus, videoError, 'Generate the influencer\'s portrait first (Step 1).'); return; }
+    var scene = document.getElementById('inf-scene').value.trim();
+    if (!scene) { setError(videoStatus, videoError, 'Describe what they\'re doing first.'); return; }
+    var model = document.getElementById('inf-video-model').value;
+    var seconds = document.getElementById('inf-seconds').value;
+    var prompt = characterSheet() + ' Scene: ' + scene;
+
+    videoBtn.disabled = true;
+    videoResult.classList.remove('is-visible');
+    setStatus(videoStatus, videoError, 'Starting render…');
+
+    fetch(API_BASE + '/api/video/long', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: prompt, model: model, seconds: seconds, image: portraitDataUri, quality: 'standard' }),
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (body) {
+        if (body.error) throw new Error(body.error);
+        return pollVideo(body.id);
+      })
+      .then(function (finished) {
+        videoOutput.src = finished.video;
+        videoDownload.href = finished.video;
+        videoResult.classList.add('is-visible');
+        setStatus(videoStatus, videoError, null);
+        videoResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        saveToLibrary('video', model, prompt, finished.video);
+      })
+      .catch(function (err) {
+        setError(videoStatus, videoError, err.message || 'Could not reach the backend at ' + API_BASE + ' — is the server running?');
+      })
+      .finally(function () {
+        videoBtn.disabled = false;
+      });
+  });
+})();
+</script>
+</body>
+</html>

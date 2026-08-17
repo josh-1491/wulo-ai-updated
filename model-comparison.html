@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Model Comparison — Pheli AI</title>
+<meta name="description" content="Sora 2, Veo 3, and Kling for video, plus GPT Image 1 and Nano Banana for images — strengths, quality tiers, and when to pick each one." />
+<style>
+  :root {
+    --ground: #000000; --surface: #17191f; --surface-raised: #1d1f26;
+    --ink: #f2f3f6; --ink-soft: #9aa1b2; --ink-faint: #6b7284;
+    --line: #2a2e3b; --line-soft: #23262f;
+    --accent: #e3a15c; --accent-ink: #1a1206; --accent-soft: rgba(227, 161, 92, 0.14); --accent-soft-line: rgba(227, 161, 92, 0.32);
+    --shadow: 220 30% 5%;
+    --serif: ui-serif, Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #000000; --surface: #17191f; --surface-raised: #1d1f26;
+      --ink: #f2f3f6; --ink-soft: #9aa1b2; --ink-faint: #6b7284;
+      --line: #2a2e3b; --line-soft: #23262f;
+      --accent: #e3a15c; --accent-ink: #1a1206;
+      --accent-soft: rgba(227, 161, 92, 0.14); --accent-soft-line: rgba(227, 161, 92, 0.32);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #000000; --surface: #17191f; --surface-raised: #1d1f26;
+    --ink: #f2f3f6; --ink-soft: #9aa1b2; --ink-faint: #6b7284;
+    --line: #2a2e3b; --line-soft: #23262f;
+    --accent: #e3a15c; --accent-ink: #1a1206;
+    --accent-soft: rgba(227, 161, 92, 0.14); --accent-soft-line: rgba(227, 161, 92, 0.32);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  img, svg { display: block; max-width: 100%; }
+  ::selection { background: var(--accent-soft); color: var(--ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+  .nav { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--ground) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line-soft); }
+  .nav-row { max-width: 52rem; margin: 0 auto; padding: 0.95rem 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .brand { display: flex; align-items: center; gap: 0.55rem; text-decoration: none; }
+  .brand-mark { width: 24px; height: 20px; color: #ffffff; flex: none; }
+  .back-link { font-family: var(--sans); font-size: 0.85rem; color: var(--ink-soft); text-decoration: none; }
+  .back-link:hover { color: var(--ink); }
+
+  .wrap { max-width: 52rem; margin: 0 auto; padding: 3.5rem 1.5rem 5rem; }
+  .eyebrow { font-family: var(--sans); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin: 0 0 0.9rem; }
+  h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(1.9rem, 1.5rem + 2vw, 2.7rem); line-height: 1.12; margin: 0 0 1rem; text-wrap: balance; }
+  .lede { font-size: 1.08rem; line-height: 1.6; color: var(--ink-soft); margin: 0 0 3rem; max-width: 40rem; }
+
+  h2 { font-family: var(--serif); font-weight: 500; font-size: 1.5rem; margin: 3rem 0 1rem; }
+  h2:first-of-type { margin-top: 0; }
+  p { font-size: 1rem; line-height: 1.7; color: var(--ink-soft); margin: 0 0 1.1rem; }
+  strong { color: var(--ink); font-weight: 600; }
+  li { font-size: 0.92rem; line-height: 1.6; color: var(--ink-soft); }
+  li::marker { color: var(--accent); }
+
+  .model-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; margin: 1.4rem 0 2.5rem; }
+  @media (max-width: 46rem) { .model-grid { grid-template-columns: 1fr; } }
+  .model-card { border: 1px solid var(--line); border-radius: 14px; padding: 1.4rem; background: var(--surface); }
+  .model-card.featured { border-color: var(--accent-soft-line); box-shadow: 0 20px 44px -30px hsl(var(--shadow) / 0.6); }
+  .model-provider { font-family: var(--mono); font-size: 0.68rem; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.06em; }
+  .model-name { font-family: var(--serif); font-size: 1.3rem; font-weight: 500; margin: 0.3rem 0 0.7rem; }
+  .model-best { font-family: var(--sans); font-size: 0.82rem; font-weight: 600; color: var(--accent); margin-bottom: 0.9rem; }
+  .model-card ul { margin: 0; padding-left: 1.1rem; }
+  .model-card li { margin-bottom: 0.45rem; }
+
+  .table-wrap { overflow-x: auto; margin: 1.4rem 0 2rem; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; min-width: 34rem; }
+  th, td { text-align: left; padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--line-soft); white-space: nowrap; }
+  th { font-family: var(--sans); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint); }
+  td { color: var(--ink-soft); }
+  td:first-child, th:first-child { color: var(--ink); font-weight: 600; }
+
+  .cta-band { margin-top: 3.5rem; padding: 1.8rem; border-radius: 14px; background: var(--surface-raised); border: 1px solid var(--line-soft); text-align: center; }
+  .cta-band p { margin: 0 0 1rem; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; font-family: var(--sans); font-weight: 600; font-size: 0.9rem; border-radius: 10px; padding: 0.7rem 1.3rem; text-decoration: none; background: var(--accent); color: var(--accent-ink); }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-row">
+    <a class="brand" href="index.html">
+      <svg class="brand-mark" viewBox="0 0 27 22" fill="none" aria-hidden="true">
+        <circle cx="9" cy="11" r="6.5" stroke="currentColor" stroke-width="1.6" />
+        <circle cx="18" cy="11" r="6.5" stroke="currentColor" stroke-width="1.6" />
+      </svg>
+    </a>
+    <a class="back-link" href="index.html#try-it">← Back to Pheli AI</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="eyebrow">Resources</p>
+  <h1>Every model, and which one to pick</h1>
+  <p class="lede">
+    Three video renderers, four image models — all available on every Pheli AI
+    generation, right from the model picker next to the prompt box. Here's what
+    actually differs between them, so picking one isn't a guess.
+  </p>
+
+  <h2>Video models</h2>
+
+  <div class="model-grid">
+    <div class="model-card featured">
+      <div class="model-provider">OpenAI</div>
+      <div class="model-name">Sora 2</div>
+      <div class="model-best">Best for: ads with sound</div>
+      <ul>
+        <li>Generates native audio alongside the video — dialogue, ambience, sound effects</li>
+        <li>Fixed durations: 4, 8, 12, 16, or 20 seconds per segment</li>
+        <li><code>sora-2-pro</code> unlocks 1080p ("Cinematic" quality)</li>
+        <li>"Continue this clip" extends the story as a new same-length segment</li>
+      </ul>
+    </div>
+    <div class="model-card">
+      <div class="model-provider">Google</div>
+      <div class="model-name">Veo 3</div>
+      <div class="model-best">Best for: physical realism</div>
+      <ul>
+        <li>Strongest at physically accurate motion — weight, momentum, fluid dynamics</li>
+        <li>Flexible durations, not locked to a fixed set like Sora</li>
+        <li>"Continue this clip" genuinely extends the same take, not a new one</li>
+        <li>1080p available under Cinematic quality</li>
+      </ul>
+    </div>
+    <div class="model-card">
+      <div class="model-provider">Kuaishou</div>
+      <div class="model-name">Kling</div>
+      <div class="model-best">Best for: fast iteration</div>
+      <ul>
+        <li>Six model tiers from 1.0 through 2.5 Turbo — pick speed vs. quality directly</li>
+        <li>Fixed 5s or 10s clips, "pro" mode for the higher-fidelity render tier</li>
+        <li>Strong at stylized and illustrative motion, not just photoreal</li>
+        <li>No clip continuation yet — each render is a standalone clip</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Side by side</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Model</th><th>Audio</th><th>Durations</th><th>Continue clip</th><th>Max quality</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Sora 2</td><td>Yes, native</td><td>4 / 8 / 12 / 16 / 20s</td><td>Yes (new segment)</td><td>1080p (pro)</td></tr>
+        <tr><td>Veo 3</td><td>No</td><td>Flexible</td><td>Yes (true extend)</td><td>1080p</td></tr>
+        <tr><td>Kling</td><td>No</td><td>5s or 10s</td><td>Not yet</td><td>Pro mode</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>A simple way to decide (video)</h2>
+  <p>
+    If the ad needs a voiceover or sound design baked into the render itself, <strong>Sora 2</strong>
+    is the only one of the three that generates audio natively. If the shot depends on
+    something moving convincingly — water, cloth, a crowd — <strong>Veo 3</strong> tends to hold
+    up best under scrutiny. If you're iterating fast on a concept and want to try a lot of
+    variations quickly, <strong>Kling</strong>'s range of speed/quality tiers makes that cheap.
+  </p>
+
+  <h2>Image models</h2>
+  <p>
+    All three cover the same style chips — Photoreal, Illustration, 3D render, Anime — the
+    difference is which provider is actually rendering behind the scenes, and what that
+    provider tends to be strongest at.
+  </p>
+
+  <div class="model-grid">
+    <div class="model-card featured">
+      <div class="model-provider">OpenAI</div>
+      <div class="model-name">GPT Image 1</div>
+      <div class="model-best">Best for: text and layout</div>
+      <ul>
+        <li>Strongest of the three at rendering legible text inside the image itself</li>
+        <li>Reliable prompt adherence for specific object counts, layouts, and composition</li>
+        <li>Good general-purpose default across all four style chips</li>
+      </ul>
+    </div>
+    <div class="model-card">
+      <div class="model-provider">Google</div>
+      <div class="model-name">Nano Banana Pro</div>
+      <div class="model-best">Best for: highest quality</div>
+      <ul>
+        <li>Gemini's higher-fidelity image tier (<code>gemini-3-pro-image</code>)</li>
+        <li>Worth the extra render time when the output is the final deliverable</li>
+      </ul>
+    </div>
+    <div class="model-card">
+      <div class="model-provider">Google</div>
+      <div class="model-name">Nano Banana 2</div>
+      <div class="model-best">Best for: fast iteration</div>
+      <ul>
+        <li>Gemini's faster, lighter image tier (<code>gemini-3.1-flash-image</code>)</li>
+        <li>Cheapest way to try several prompt variations before committing to a final render</li>
+      </ul>
+    </div>
+  </div>
+
+  <p>
+    None of this is a permanent choice — every template and every generation lets you swap
+    models per render, so trying the same prompt on two models costs nothing but time.
+  </p>
+
+  <div class="cta-band">
+    <p>Pick a model right from the prompt box — no separate setup required.</p>
+    <a class="btn" href="index.html#try-it">Try it now</a>
+  </div>
+</main>
+
+</body>
+</html>
