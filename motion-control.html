@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Motion Control — Pheli AI</title>
+<meta name="description" content="Upload a subject image and a motion reference video — Seedance 2.5 applies that motion to your subject." />
+<style>
+  :root {
+    --ground: #000000; --surface: #17191f; --surface-raised: #1d1f26;
+    --ink: #f2f3f6; --ink-soft: #9aa1b2; --ink-faint: #6b7284;
+    --line: #2a2e3b; --line-soft: #23262f;
+    --accent: #e3a15c; --accent-ink: #1a1206; --accent-soft: rgba(227, 161, 92, 0.14); --accent-soft-line: rgba(227, 161, 92, 0.32);
+    --shadow: 220 30% 5%;
+    --serif: ui-serif, Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  img, svg { display: block; max-width: 100%; }
+  ::selection { background: var(--accent-soft); color: var(--ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+  button { font: inherit; }
+
+  .nav { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--ground) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line-soft); }
+  .nav-row { max-width: 46rem; margin: 0 auto; padding: 0.95rem 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .brand { display: flex; align-items: center; gap: 0.55rem; text-decoration: none; }
+  .brand-mark { width: 24px; height: 20px; color: #ffffff; flex: none; }
+  .back-link { font-family: var(--sans); font-size: 0.85rem; color: var(--ink-soft); text-decoration: none; }
+  .back-link:hover { color: var(--ink); }
+
+  .wrap { max-width: 46rem; margin: 0 auto; padding: 3.5rem 1.5rem 5rem; }
+  .eyebrow { font-family: var(--sans); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin: 0 0 0.9rem; }
+  h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(1.9rem, 1.5rem + 2vw, 2.7rem); line-height: 1.12; margin: 0 0 1rem; text-wrap: balance; }
+  .lede { font-size: 1.05rem; line-height: 1.6; color: var(--ink-soft); margin: 0 0 1.2rem; max-width: 38rem; }
+  .honesty-note { font-family: var(--sans); font-size: 0.82rem; line-height: 1.55; color: var(--ink-faint); background: var(--surface); border: 1px solid var(--line-soft); border-radius: 10px; padding: 0.85rem 1rem; margin: 0 0 2.5rem; }
+
+  h2 { font-family: var(--serif); font-weight: 500; font-size: 1.4rem; margin: 0 0 1.2rem; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 1.6rem; margin-bottom: 2rem; }
+
+  .field { margin-bottom: 1.1rem; }
+  .field label { display: block; font-family: var(--sans); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.55rem; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 30rem) { .field-row { grid-template-columns: 1fr; } }
+  .input, .select, .textarea, .file {
+    width: 100%; font-family: var(--sans); font-size: 0.94rem; color: var(--ink); background: var(--surface-raised);
+    border: 1px solid var(--line); border-radius: 10px; padding: 0.7rem 0.85rem;
+  }
+  .textarea { font-family: var(--serif); min-height: 4.5rem; resize: vertical; line-height: 1.5; }
+  .input::placeholder, .textarea::placeholder { color: var(--ink-faint); }
+  .field-hint { font-family: var(--sans); font-size: 0.76rem; color: var(--ink-faint); margin: 0.4rem 0 0; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-family: var(--sans); font-weight: 700; font-size: 0.92rem; border-radius: 10px; padding: 0.8rem 1.3rem; text-decoration: none; border: none; cursor: pointer; width: 100%; }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-primary:hover { filter: brightness(1.05); }
+  .btn-primary[disabled] { opacity: 0.65; cursor: progress; }
+  .btn-ghost { background: var(--surface-raised); color: var(--ink); border: 1px solid var(--line); }
+
+  .status { font-family: var(--mono); font-size: 0.82rem; color: var(--ink-faint); margin-top: 0.9rem; }
+  .loading-dots { display: inline-flex; gap: 3px; margin-left: 3px; vertical-align: middle; }
+  .loading-dots span { width: 4px; height: 4px; border-radius: 50%; background: currentColor; animation: dot-pulse 1.4s ease-in-out infinite; opacity: 0.2; }
+  .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes dot-pulse { 0%, 80%, 100% { opacity: 0.2; transform: scale(0.85); } 40% { opacity: 1; transform: scale(1); } }
+  @media (prefers-reduced-motion: reduce) { .loading-dots span { animation: none; opacity: 0.7; } }
+  .error { font-family: var(--sans); font-size: 0.85rem; color: #e0857a; margin-top: 0.9rem; }
+
+  .result { margin-top: 1.4rem; display: none; }
+  .result.is-visible { display: block; }
+  .result video { width: 100%; border-radius: 12px; border: 1px solid var(--line); background: #0c0d12; margin-bottom: 0.9rem; }
+
+  .preview-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.1rem; }
+  @media (max-width: 30rem) { .preview-row { grid-template-columns: 1fr; } }
+  .preview-box { border-radius: 10px; border: 1px solid var(--line-soft); overflow: hidden; background: #0c0d12; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; }
+  .preview-box img, .preview-box video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .preview-box .placeholder { font-family: var(--mono); font-size: 0.72rem; color: var(--ink-faint); text-align: center; padding: 1rem; }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-row">
+    <a class="brand" href="index.html">
+      <svg class="brand-mark" viewBox="0 0 27 22" fill="none" aria-hidden="true">
+        <circle cx="9" cy="11" r="6.5" stroke="currentColor" stroke-width="1.6" />
+        <circle cx="18" cy="11" r="6.5" stroke="currentColor" stroke-width="1.6" />
+      </svg>
+    </a>
+    <div style="display:flex; align-items:center; gap:1.2rem;">
+      <a class="back-link" href="ai-influencer.html">AI Influencer</a>
+      <a class="back-link" href="library.html">My Library</a>
+      <a class="back-link" href="index.html">← Back to Pheli AI</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="eyebrow">Motion Control</p>
+  <h1>Apply motion from a video to your subject</h1>
+  <p class="lede">
+    Upload a subject image and a motion reference clip — Seedance weaves them together
+    so your subject performs that motion, instead of animating from a single starting frame.
+  </p>
+  <p class="honesty-note">
+    This runs on Seedance 2.5's "reference to video" mode, which accepts a driving video
+    alongside a subject image. It's the closest real, API-backed equivalent to Kling's
+    consumer-app "Motion Control" feature — Kling's own developer API doesn't expose that
+    feature directly, as far as could be confirmed, so this isn't literally the same model.
+  </p>
+
+  <div class="card">
+    <h2>Subject &amp; motion reference</h2>
+
+    <div class="preview-row">
+      <div class="preview-box" id="subject-preview-box">
+        <span class="placeholder" id="subject-placeholder">Subject image preview</span>
+      </div>
+      <div class="preview-box" id="motion-preview-box">
+        <span class="placeholder" id="motion-placeholder">Motion video preview</span>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="mc-subject-file">Subject image</label>
+        <input class="file" id="mc-subject-file" type="file" accept="image/*" />
+        <p class="field-hint">The character or object that should perform the motion.</p>
+      </div>
+      <div class="field">
+        <label for="mc-motion-file">Motion reference video</label>
+        <input class="file" id="mc-motion-file" type="file" accept="video/*" />
+        <p class="field-hint">A clip showing the movement to apply — dancing, walking, a gesture.</p>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="mc-prompt">Prompt</label>
+      <textarea class="textarea" id="mc-prompt" placeholder="The subject in the image performs the motion from the reference video, natural lighting">The subject in the image performs the motion from the reference video, natural lighting</textarea>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="mc-seconds">Duration</label>
+        <select class="select" id="mc-seconds">
+          <option value="4">4s</option>
+          <option value="8" selected>8s</option>
+          <option value="12">12s</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="mc-quality">Quality</label>
+        <select class="select" id="mc-quality">
+          <option value="standard">720p</option>
+          <option value="cinematic">1080p</option>
+          <option value="4k">4K</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" id="mc-generate" type="button">Generate</button>
+    <p class="status" id="mc-status" hidden></p>
+    <p class="error" id="mc-error" hidden></p>
+
+    <div class="result" id="mc-result">
+      <video id="mc-output" controls loop playsinline></video>
+      <a class="btn btn-ghost" id="mc-download" download="pheli-ai-motion-control.mp4">↓ Download video</a>
+    </div>
+  </div>
+</main>
+
+<script>
+(function () {
+  var API_BASE = /^(localhost|127\.0\.0\.1)$/.test(location.hostname)
+    ? 'http://localhost:4000'
+    : 'https://pheli-ai-backend.onrender.com';
+  var AUTH_TOKEN_KEY = 'pheli_auth_token';
+  var currentIsPro = false;
+
+  // 4K and Seedance 2.5 are Plus/Pro-exclusive server-side. This page runs on
+  // Seedance either way, so Free accounts fall back to 2.0 (which also supports
+  // reference-to-video) rather than being locked out of the page entirely.
+  (function applyProGating() {
+    var qualitySelect = document.getElementById('mc-quality');
+    var fourKOption = qualitySelect.querySelector('option[value="4k"]');
+    function apply(isPro) {
+      currentIsPro = isPro;
+      if (fourKOption) {
+        fourKOption.disabled = !isPro;
+        fourKOption.textContent = isPro ? '4K' : '4K (Plus)';
+        if (!isPro && qualitySelect.value === '4k') { qualitySelect.value = 'standard'; }
+      }
+    }
+    var token = localStorage.getItem(AUTH_TOKEN_KEY);
+    if (!token) { apply(false); return; }
+    fetch(API_BASE + '/api/checkout/subscription', { headers: { Authorization: 'Bearer ' + token } })
+      .then(function (res) { return res.json(); })
+      .then(function (body) { apply(!!(body.active && (body.tier === 'pro' || body.tier === 'plus'))); })
+      .catch(function () { apply(false); });
+  })();
+
+  function saveToLibrary(kind, model, prompt, dataUri) {
+    var token = localStorage.getItem(AUTH_TOKEN_KEY);
+    if (!token) return;
+    fetch(API_BASE + '/api/library', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+      body: JSON.stringify({ kind: kind, model: model, prompt: prompt, dataUri: dataUri }),
+    }).catch(function (err) { console.warn('Could not save to library:', err); });
+  }
+
+  var LOADING_DOTS_HTML = '<span class="loading-dots"><span></span><span></span><span></span></span>';
+  function setStatus(statusEl, errorEl, text) {
+    if (text) { statusEl.hidden = false; statusEl.innerHTML = text.replace(/…$/, '') + LOADING_DOTS_HTML; } else { statusEl.hidden = true; }
+    errorEl.hidden = true;
+  }
+  function setError(statusEl, errorEl, text) {
+    statusEl.hidden = true;
+    errorEl.hidden = false;
+    errorEl.textContent = text;
+  }
+
+  function fileToDataUri(file) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function () { resolve(reader.result); };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  var subjectInput = document.getElementById('mc-subject-file');
+  var motionInput = document.getElementById('mc-motion-file');
+  var subjectBox = document.getElementById('subject-preview-box');
+  var motionBox = document.getElementById('motion-preview-box');
+
+  subjectInput.addEventListener('change', function () {
+    var file = subjectInput.files[0];
+    if (!file) return;
+    fileToDataUri(file).then(function (dataUri) {
+      subjectBox.innerHTML = '<img src="' + dataUri + '" alt="Subject preview" />';
+    });
+  });
+
+  motionInput.addEventListener('change', function () {
+    var file = motionInput.files[0];
+    if (!file) return;
+    fileToDataUri(file).then(function (dataUri) {
+      motionBox.innerHTML = '<video src="' + dataUri + '" autoplay muted loop playsinline></video>';
+    });
+  });
+
+  var generateBtn = document.getElementById('mc-generate');
+  var status = document.getElementById('mc-status');
+  var error = document.getElementById('mc-error');
+  var result = document.getElementById('mc-result');
+  var output = document.getElementById('mc-output');
+  var download = document.getElementById('mc-download');
+
+  function pollVideo(id) {
+    return fetch(API_BASE + '/api/video/' + encodeURIComponent(id))
+      .then(function (res) { return res.json(); })
+      .then(function (body) {
+        if (body.status === 'completed') return body;
+        if (body.status === 'failed') throw new Error(body.error || 'Generation failed');
+        var label = body.progressSeconds != null && body.targetSeconds != null
+          ? 'Rendering — ' + body.progressSeconds + 's of ' + body.targetSeconds + 's'
+          : (body.status || 'in_progress').replace('_', ' ');
+        setStatus(status, error, label + '…');
+        return new Promise(function (resolve) { setTimeout(resolve, 4000); }).then(function () { return pollVideo(id); });
+      });
+  }
+
+  generateBtn.addEventListener('click', function () {
+    var subjectFile = subjectInput.files[0];
+    var motionFile = motionInput.files[0];
+    var prompt = document.getElementById('mc-prompt').value.trim();
+    if (!subjectFile) { setError(status, error, 'Add a subject image first.'); return; }
+    if (!motionFile) { setError(status, error, 'Add a motion reference video first.'); return; }
+    if (!prompt) { setError(status, error, 'Enter a prompt first.'); return; }
+
+    var seconds = document.getElementById('mc-seconds').value;
+    var quality = document.getElementById('mc-quality').value;
+
+    generateBtn.disabled = true;
+    result.classList.remove('is-visible');
+    setStatus(status, error, 'Starting render…');
+
+    Promise.all([fileToDataUri(subjectFile), fileToDataUri(motionFile)])
+      .then(function (results) {
+        var headers = { 'Content-Type': 'application/json' };
+        var token = localStorage.getItem(AUTH_TOKEN_KEY);
+        if (token) { headers.Authorization = 'Bearer ' + token; }
+        return fetch(API_BASE + '/api/video/long', {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify({
+            prompt: prompt,
+            model: currentIsPro ? 'seedance-2-5' : 'seedance-2-0',
+            seconds: seconds,
+            quality: quality,
+            referenceImages: [results[0]],
+            referenceVideos: [results[1]],
+          }),
+        });
+      })
+      .then(function (res) { return res.json(); })
+      .then(function (body) {
+        if (body.error) throw new Error(body.error);
+        return pollVideo(body.id);
+      })
+      .then(function (finished) {
+        output.src = finished.video;
+        download.href = finished.video;
+        result.classList.add('is-visible');
+        setStatus(status, error, null);
+        result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        saveToLibrary('video', 'seedance-2-5', prompt, finished.video);
+      })
+      .catch(function (err) {
+        setError(status, error, err.message || 'Could not reach the backend at ' + API_BASE + ' — is the server running?');
+      })
+      .finally(function () {
+        generateBtn.disabled = false;
+      });
+  });
+})();
+</script>
+</body>
+</html>

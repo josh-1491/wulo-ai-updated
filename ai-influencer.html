@@ -31,7 +31,7 @@
   .back-link { font-family: var(--sans); font-size: 0.85rem; color: var(--ink-soft); text-decoration: none; }
   .back-link:hover { color: var(--ink); }
 
-  .wrap { max-width: 46rem; margin: 0 auto; padding: 3.5rem 1.5rem 5rem; }
+  .wrap { max-width: 52rem; margin: 0 auto; padding: 3.5rem 1.5rem 5rem; }
   .eyebrow { font-family: var(--sans); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin: 0 0 0.9rem; }
   h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(1.9rem, 1.5rem + 2vw, 2.7rem); line-height: 1.12; margin: 0 0 1rem; text-wrap: balance; }
   .lede { font-size: 1.05rem; line-height: 1.6; color: var(--ink-soft); margin: 0 0 2.5rem; max-width: 38rem; }
@@ -118,6 +118,7 @@
       </svg>
     </a>
     <div style="display:flex; align-items:center; gap:1.2rem;">
+      <a class="back-link" href="motion-control.html">Motion Control</a>
       <a class="back-link" href="library.html">My Library</a>
       <a class="back-link" href="index.html">← Back to Pheli AI</a>
     </div>
@@ -206,7 +207,7 @@
         <span class="chip" data-style="Photoreal" data-active="true">Photoreal</span>
         <span class="chip" data-style="Illustration">Illustration</span>
         <span class="chip" data-style="3D render">3D render</span>
-        <span class="chip" data-style="Anime">Anime</span>
+        <span class="chip" data-style="Animation">Animation</span>
       </div>
     </div>
 
@@ -239,7 +240,10 @@
         <select class="select" id="inf-video-model">
           <option value="sora-2">Sora 2</option>
           <option value="veo-3">Veo 3</option>
+          <option value="kling-2-1">Kling 2.1</option>
           <option value="kling-2-5-turbo">Kling 2.5 Turbo</option>
+          <option value="seedance-2-0">Seedance 2.0</option>
+          <option value="seedance-2-5">Seedance 2.5</option>
         </select>
       </div>
       <div class="field">
@@ -271,6 +275,35 @@
   var AUTH_TOKEN_KEY = 'pheli_auth_token';
   var activeStyle = 'Photoreal';
   var portraitDataUri = null;
+
+  // Without this, generation requests go out as anonymous even when signed in
+  // on a paid plan — the backend reads the JWT from this header for both usage
+  // limits and Pro-only features, so omitting it silently downgrades to Free.
+  function jsonHeaders() {
+    var headers = { 'Content-Type': 'application/json' };
+    var token = localStorage.getItem(AUTH_TOKEN_KEY);
+    if (token) { headers.Authorization = 'Bearer ' + token; }
+    return headers;
+  }
+
+  // Seedance 2.5 is Plus/Pro-exclusive server-side — reflect that in this page's
+  // model dropdown too, same as the main site's Try It selectors.
+  (function applyProGatingToVideoModel() {
+    var select = document.getElementById('inf-video-model');
+    var option = select.querySelector('option[value="seedance-2-5"]');
+    if (!option) return;
+    var token = localStorage.getItem(AUTH_TOKEN_KEY);
+    if (!token) { option.disabled = true; option.textContent = 'Seedance 2.5 (Plus)'; return; }
+    fetch(API_BASE + '/api/checkout/subscription', { headers: { Authorization: 'Bearer ' + token } })
+      .then(function (res) { return res.json(); })
+      .then(function (body) {
+        var isPro = !!(body.active && (body.tier === 'pro' || body.tier === 'plus'));
+        option.disabled = !isPro;
+        option.textContent = isPro ? 'Seedance 2.5' : 'Seedance 2.5 (Plus)';
+        if (!isPro && select.value === 'seedance-2-5') { select.value = 'sora-2'; }
+      })
+      .catch(function () { option.disabled = true; option.textContent = 'Seedance 2.5 (Plus)'; });
+  })();
 
   // Saved to the same account system as the main site (shared localStorage on
   // this origin) — silently skipped when signed out, same as on index.html.
@@ -340,7 +373,7 @@
 
     fetch(API_BASE + '/api/image', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: jsonHeaders(),
       body: JSON.stringify({ prompt: prompt, model: model, style: activeStyle }),
     })
       .then(function (res) { return res.json(); })
@@ -408,7 +441,7 @@
 
     fetch(API_BASE + '/api/video/long', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: jsonHeaders(),
       body: JSON.stringify({ prompt: prompt, model: model, seconds: seconds, image: portraitDataUri, quality: 'standard' }),
     })
       .then(function (res) { return res.json(); })
