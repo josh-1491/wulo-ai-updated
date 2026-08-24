@@ -2,7 +2,7 @@ services:
   - type: web
     name: pheli-ai-site
     runtime: static
-    buildCommand: ""
+    buildCommand: echo "no build needed — plain static HTML"
     staticPublishPath: .
     headers:
       - path: /*
