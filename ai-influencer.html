@@ -5,38 +5,42 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Create an AI Influencer — Pheli AI</title>
 <meta name="description" content="Design a consistent AI influencer — name, look, and personality — then generate a reference portrait and bring them to life in video." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ground: #000000; --surface: #17191f; --surface-raised: #1d1f26;
-    --ink: #f2f3f6; --ink-soft: #9aa1b2; --ink-faint: #6b7284;
-    --line: #2a2e3b; --line-soft: #23262f;
-    --accent: #e3a15c; --accent-ink: #1a1206; --accent-soft: rgba(227, 161, 92, 0.14); --accent-soft-line: rgba(227, 161, 92, 0.32);
+    color-scheme: light;
+    --ground: #ffffff; --surface: #ffffff; --surface-raised: #f2f1f0;
+    --ink: #0c0a09; --ink-soft: #4d4d51; --ink-faint: #71737a;
+    --line: #e6e6e7; --line-soft: #f0f0ef;
+    --accent: #96ff1a; --accent-ink: #083300; --accent-text: #3c7a00; --accent-soft: #e6ffc8; --accent-soft-line: #c2ec8a;
     --shadow: 220 30% 5%;
-    --serif: ui-serif, Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
-    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, sans-serif;
+    --serif: "Playfair Display", "Didot", "Bodoni MT", Georgia, serif;
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, sans-serif;
     --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
   }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
   a { color: inherit; }
   img, svg { display: block; max-width: 100%; }
-  ::selection { background: var(--accent-soft); color: var(--ink); }
-  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+  ::selection { background: #d6ffa6; color: #083300; }
+  :focus-visible { outline: 2px solid #3c7a00; outline-offset: 2px; border-radius: 4px; }
   button { font: inherit; }
 
   .nav { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--ground) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line-soft); }
   .nav-row { max-width: 46rem; margin: 0 auto; padding: 0.95rem 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
   .brand { display: flex; align-items: center; gap: 0.55rem; text-decoration: none; }
-  .brand-mark { width: 24px; height: 20px; color: #ffffff; flex: none; }
+  .brand-mark { width: 24px; height: 20px; color: var(--ink); flex: none; }
   .back-link { font-family: var(--sans); font-size: 0.85rem; color: var(--ink-soft); text-decoration: none; }
   .back-link:hover { color: var(--ink); }
 
   .wrap { max-width: 52rem; margin: 0 auto; padding: 3.5rem 1.5rem 5rem; }
-  .eyebrow { font-family: var(--sans); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin: 0 0 0.9rem; }
-  h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(1.9rem, 1.5rem + 2vw, 2.7rem); line-height: 1.12; margin: 0 0 1rem; text-wrap: balance; }
+  .eyebrow { font-family: var(--sans); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-text); margin: 0 0 0.9rem; }
+  h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(1.9rem, 1.5rem + 2vw, 2.7rem); line-height: 1.05; letter-spacing: -0.02em; margin: 0 0 1rem; text-wrap: balance; }
   .lede { font-size: 1.05rem; line-height: 1.6; color: var(--ink-soft); margin: 0 0 2.5rem; max-width: 38rem; }
 
-  h2 { font-family: var(--serif); font-weight: 500; font-size: 1.4rem; margin: 0 0 1.2rem; }
+  h2 { font-family: var(--serif); font-weight: 500; font-size: 1.4rem; letter-spacing: -0.02em; line-height: 1.05; margin: 0 0 1.2rem; }
   .card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 1.6rem; margin-bottom: 2rem; }
 
   .field { margin-bottom: 1.1rem; }
@@ -47,17 +51,17 @@
     width: 100%; font-family: var(--sans); font-size: 0.94rem; color: var(--ink); background: var(--surface-raised);
     border: 1px solid var(--line); border-radius: 10px; padding: 0.7rem 0.85rem;
   }
-  .textarea { font-family: var(--serif); min-height: 5.5rem; resize: vertical; line-height: 1.5; }
+  .textarea { font-family: var(--sans); min-height: 5.5rem; resize: vertical; line-height: 1.5; }
   .input::placeholder, .textarea::placeholder { color: var(--ink-faint); }
 
   .chip-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
   .chip { font-family: var(--sans); font-size: 0.82rem; font-weight: 500; padding: 0.45rem 0.85rem; border-radius: 999px; border: 1px solid var(--line); background: var(--surface-raised); color: var(--ink-soft); cursor: pointer; }
   .chip:hover { border-color: var(--accent-soft-line); color: var(--ink); }
-  .chip[data-active="true"] { background: var(--accent-soft); border-color: var(--accent-soft-line); color: var(--accent); }
+  .chip[data-active="true"] { background: var(--accent-soft); border-color: var(--accent-soft-line); color: var(--accent-ink); }
 
   .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-family: var(--sans); font-weight: 700; font-size: 0.92rem; border-radius: 10px; padding: 0.8rem 1.3rem; text-decoration: none; border: none; cursor: pointer; width: 100%; }
-  .btn-primary { background: var(--accent); color: var(--accent-ink); }
-  .btn-primary:hover { filter: brightness(1.05); }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); border: 1px solid var(--accent-ink); }
+  .btn-primary:hover { filter: brightness(0.97); }
   .btn-primary[disabled] { opacity: 0.65; cursor: progress; }
   .btn-ghost { background: var(--surface-raised); color: var(--ink); border: 1px solid var(--line); }
 
@@ -71,14 +75,14 @@
   .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
   @keyframes dot-pulse { 0%, 80%, 100% { opacity: 0.2; transform: scale(0.85); } 40% { opacity: 1; transform: scale(1); } }
   @media (prefers-reduced-motion: reduce) { .loading-dots span { animation: none; opacity: 0.7; } }
-  .error { font-family: var(--sans); font-size: 0.85rem; color: #e0857a; margin-top: 0.9rem; }
+  .error { font-family: var(--sans); font-size: 0.85rem; color: #b42318; margin-top: 0.9rem; }
 
   .result { margin-top: 1.4rem; display: none; }
   .result.is-visible { display: block; }
   .result img, .result video { width: 100%; border-radius: 12px; border: 1px solid var(--line); background: #0c0d12; margin-bottom: 0.9rem; }
 
   .sheet { background: var(--surface-raised); border: 1px solid var(--line-soft); border-radius: 12px; padding: 1.1rem 1.2rem; margin-top: 1rem; }
-  .sheet-label { font-family: var(--sans); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin: 0 0 0.6rem; display: flex; align-items: center; justify-content: space-between; }
+  .sheet-label { font-family: var(--sans); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-text); margin: 0 0 0.6rem; display: flex; align-items: center; justify-content: space-between; }
   .sheet-text { font-family: var(--mono); font-size: 0.82rem; line-height: 1.6; color: var(--ink-soft); margin: 0; white-space: pre-wrap; }
   .copy-btn { font-family: var(--sans); font-size: 0.72rem; font-weight: 700; color: var(--ink-faint); background: none; border: none; cursor: pointer; }
   .copy-btn:hover { color: var(--ink); }
@@ -86,7 +90,7 @@
   .download-row { display: flex; gap: 0.6rem; }
   .download-row .btn { flex: 1; }
 
-  .step-num { font-family: var(--mono); font-size: 0.72rem; color: var(--accent); margin-bottom: 0.4rem; }
+  .step-num { font-family: var(--mono); font-size: 0.72rem; color: var(--accent-text); margin-bottom: 0.4rem; }
 
   .example-card { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-bottom: 2.5rem; }
   @media (max-width: 30rem) { .example-card { grid-template-columns: 1fr; } }
@@ -286,23 +290,23 @@
     return headers;
   }
 
-  // Seedance 2.5 is Plus/Pro-exclusive server-side — reflect that in this page's
-  // model dropdown too, same as the main site's Try It selectors.
+  // Seedance 2.5 is paid-plan-exclusive server-side — reflect that in this
+  // page's model dropdown too, same as the main site's Try It selectors.
   (function applyProGatingToVideoModel() {
     var select = document.getElementById('inf-video-model');
     var option = select.querySelector('option[value="seedance-2-5"]');
     if (!option) return;
     var token = localStorage.getItem(AUTH_TOKEN_KEY);
-    if (!token) { option.disabled = true; option.textContent = 'Seedance 2.5 (Plus)'; return; }
+    if (!token) { option.disabled = true; option.textContent = 'Seedance 2.5 (paid plans)'; return; }
     fetch(API_BASE + '/api/checkout/subscription', { headers: { Authorization: 'Bearer ' + token } })
       .then(function (res) { return res.json(); })
       .then(function (body) {
-        var isPro = !!(body.active && (body.tier === 'pro' || body.tier === 'plus'));
+        var isPro = !!(body.active && (body.tier === 'pro' || body.tier === 'plus' || body.tier === 'basic'));
         option.disabled = !isPro;
-        option.textContent = isPro ? 'Seedance 2.5' : 'Seedance 2.5 (Plus)';
+        option.textContent = isPro ? 'Seedance 2.5' : 'Seedance 2.5 (paid plans)';
         if (!isPro && select.value === 'seedance-2-5') { select.value = 'sora-2'; }
       })
-      .catch(function () { option.disabled = true; option.textContent = 'Seedance 2.5 (Plus)'; });
+      .catch(function () { option.disabled = true; option.textContent = 'Seedance 2.5 (paid plans)'; });
   })();
 
   // Saved to the same account system as the main site (shared localStorage on

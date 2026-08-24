@@ -5,71 +5,101 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Pheli AI — AI ads, from idea to video</title>
 <meta name="description" content="Pheli AI turns a product description or photo into a full advertisement — hook, script, storyboard, and a rendered video — using Sora, Veo, Kling, and Seedance." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
   /* ---------------------------------------------------------------
-     Design plan
-     Color   ground/surface/ink/line neutrals biased cool-navy (dark
-             mode primary) + one warm amber accent — the
-             same palette as the Pheli AI product itself, so the
-             marketing site and the app read as one thing.
-     Type    ui-serif for headlines and the concept mockups (the
-             register of something worth trusting), ui-sans for nav
-             and UI chrome, ui-monospace for stats, scene labels, and
-             the live "create" snippet.
-     Layout  a single scrolling story that keeps recreating real
-             product surfaces — hook cards, scene chips, style tiles —
-             as its own illustrations, instead of generic dashboard art.
+     Design plan — "white gallery wall with neon-green ignition"
+     Color   a committed light canvas: Paper #ffffff ground, warm
+             near-black Carbon #0c0a09 ink, Fog hairlines, and ONE
+             electric lime #96ff1a accent rationed to primary actions
+             and active states (always paired with deep Forest Ink
+             #083300 text — never lime-as-text on white). Full-bleed
+             #121212 Onyx bands break the scroll into acts.
+     Type    Playfair Display (editorial didone) for display headings
+             only, tight-tracked; Inter for all UI, body, nav, and
+             buttons; monospace stays for stats and scene labels.
+     Layout  generous white breathing room, compact tool-like
+             controls, 10px control radius / 16px card radius,
+             borders instead of shadows.
      --------------------------------------------------------------- */
 
   :root {
-    --ground: #000000;
-    --surface: #17191f;
-    --surface-raised: #1d1f26;
-    --ink: #f2f3f6;
-    --ink-soft: #9aa1b2;
-    --ink-faint: #6b7284;
-    --line: #2a2e3b;
-    --line-soft: #23262f;
-    --accent: #e3a15c;
-    --accent-ink: #1a1206;
-    --accent-soft: rgba(227, 161, 92, 0.14);
-    --accent-soft-line: rgba(227, 161, 92, 0.32);
+    color-scheme: light;
+    --ground: #ffffff;
+    --surface: #ffffff;
+    --surface-raised: #f2f1f0;
+    --ink: #0c0a09;
+    --ink-soft: #4d4d51;
+    --ink-faint: #71737a;
+    --line: #e6e6e7;
+    --line-soft: #f0f0ef;
+    --accent: #96ff1a;
+    --accent-ink: #083300;
+    --accent-text: #3c7a00;
+    --accent-soft: #e6ffc8;
+    --accent-soft-line: #c2ec8a;
     --shadow: 220 30% 5%;
 
-    --serif: ui-serif, Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
-    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, sans-serif;
+    --serif: "Playfair Display", "Didot", "Bodoni MT", Georgia, serif;
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, sans-serif;
     --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
   }
 
+  /* The site commits to the light VEED-style canvas in every theme
+     state — the three blocks stay identical so OS dark mode or a
+     stamped data-theme can't strand components on the wrong ground. */
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --ground: #000000;
-      --surface: #17191f;
-      --surface-raised: #1d1f26;
-      --ink: #f2f3f6;
-      --ink-soft: #9aa1b2;
-      --ink-faint: #6b7284;
-      --line: #2a2e3b;
-      --line-soft: #23262f;
-      --accent: #e3a15c;
-      --accent-ink: #1a1206;
-      --accent-soft: rgba(227, 161, 92, 0.14);
-      --accent-soft-line: rgba(227, 161, 92, 0.32);
+      --ground: #ffffff;
+      --surface: #ffffff;
+      --surface-raised: #f2f1f0;
+      --ink: #0c0a09;
+      --ink-soft: #4d4d51;
+      --ink-faint: #71737a;
+      --line: #e6e6e7;
+      --line-soft: #f0f0ef;
+      --accent: #96ff1a;
+      --accent-ink: #083300;
+      --accent-text: #3c7a00;
+      --accent-soft: #e6ffc8;
+      --accent-soft-line: #c2ec8a;
     }
   }
   :root[data-theme="dark"] {
-    --ground: #000000;
-    --surface: #17191f;
-    --surface-raised: #1d1f26;
-    --ink: #f2f3f6;
-    --ink-soft: #9aa1b2;
-    --ink-faint: #6b7284;
-    --line: #2a2e3b;
-    --line-soft: #23262f;
-    --accent: #e3a15c;
-    --accent-ink: #1a1206;
-    --accent-soft: rgba(227, 161, 92, 0.14);
-    --accent-soft-line: rgba(227, 161, 92, 0.32);
+    --ground: #ffffff;
+    --surface: #ffffff;
+    --surface-raised: #f2f1f0;
+    --ink: #0c0a09;
+    --ink-soft: #4d4d51;
+    --ink-faint: #71737a;
+    --line: #e6e6e7;
+    --line-soft: #f0f0ef;
+    --accent: #96ff1a;
+    --accent-ink: #083300;
+    --accent-text: #3c7a00;
+    --accent-soft: #e6ffc8;
+    --accent-soft-line: #c2ec8a;
+  }
+
+  /* Full-bleed Onyx band — VEED's structural rhythm device. Token
+     overrides keep every component inside legible without dark-only
+     styles: lime stays the accent (it ignites on #121212), text
+     accents brighten to read on dark. */
+  .band-dark {
+    background: #121212;
+    --ground: #121212;
+    --surface: #1c1c1e;
+    --surface-raised: #26262a;
+    --ink: #ffffff;
+    --ink-soft: #b4b5ba;
+    --ink-faint: #8a8b91;
+    --line: #2e2e32;
+    --line-soft: #242428;
+    --accent-text: #aef457;
+    --accent-soft: rgba(150, 255, 26, 0.13);
+    --accent-soft-line: rgba(150, 255, 26, 0.35);
   }
 
   * { box-sizing: border-box; }
@@ -81,9 +111,9 @@
     font-family: var(--sans);
     -webkit-font-smoothing: antialiased;
   }
-  ::selection { background: var(--accent-soft); color: var(--ink); }
+  ::selection { background: #d6ffa6; color: #083300; }
   a { color: inherit; }
-  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+  :focus-visible { outline: 2px solid #3c7a00; outline-offset: 2px; border-radius: 4px; }
   img, svg { display: block; max-width: 100%; }
   section { position: relative; }
   .wrap { max-width: 74rem; margin: 0 auto; padding: 0 1.5rem; }
@@ -105,7 +135,7 @@
   }
   .nav-row { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding: 0.95rem 0; }
   .brand { display: flex; align-items: center; gap: 0.55rem; text-decoration: none; }
-  .brand-mark { width: 27px; height: 22px; color: #ffffff; flex: none; }
+  .brand-mark { width: 27px; height: 22px; color: var(--ink); flex: none; }
   .brand-mark circle { animation: brand-pulse 2.8s ease-in-out infinite; }
   .brand-mark .loop-b { animation-delay: 0.65s; }
   @keyframes brand-pulse {
@@ -128,7 +158,7 @@
     position: absolute; top: calc(100% + 1rem); left: 50%; transform: translateX(-50%);
     min-width: 12rem; background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
     padding: 0.4rem; display: none; flex-direction: column; gap: 0.1rem;
-    box-shadow: 0 20px 44px -30px hsl(var(--shadow) / 0.6); z-index: 50;
+    z-index: 50;
   }
   .nav-dropdown-menu.is-open { display: flex; }
   .nav-dropdown-menu a { padding: 0.6rem 0.7rem; border-radius: 7px; font-size: 0.85rem; color: var(--ink-soft); text-decoration: none; }
@@ -141,10 +171,13 @@
     border-radius: 10px; padding: 0.65rem 1.2rem; text-decoration: none;
     border: 1px solid transparent; cursor: pointer;
   }
-  .btn-primary { background: var(--accent); color: var(--accent-ink); box-shadow: 0 10px 24px -12px hsl(var(--shadow) / 0.55); }
-  .btn-primary:hover { filter: brightness(1.05); }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent-ink); }
+  .btn-primary:hover { filter: brightness(0.97); }
   .btn-ghost { background: transparent; color: var(--ink); border-color: var(--line); }
   .btn-ghost:hover { background: var(--surface-raised); }
+  /* Dark conversion pill — VEED's hierarchy: lime = creation, black = conversion. */
+  .btn-dark { background: var(--ink); color: var(--ground); border-radius: 999px; }
+  .btn-dark:hover { filter: brightness(1.15); }
   .nav-toggle { display: none; background: none; border: none; color: var(--ink); padding: 0.4rem; cursor: pointer; }
   .mobile-menu { display: none; }
 
@@ -188,12 +221,11 @@
     height: 230px;
     aspect-ratio: 9 / 16;
     margin-right: 1rem;
-    border-radius: 14px;
+    border-radius: 16px;
     overflow: hidden;
     border: 1px solid var(--line);
-    background: #0c0d12;
+    background: #121212;
     flex: none;
-    box-shadow: 0 20px 44px -30px hsl(var(--shadow) / 0.6);
   }
   .marquee-tile.is-wide { aspect-ratio: 16 / 9; }
   .marquee-tile video { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -217,18 +249,18 @@
   .hero { padding: 5rem 0 4.5rem; text-align: center; }
   .badge {
     display: inline-flex; align-items: center; gap: 0.5rem;
-    font-family: var(--sans); font-size: 0.8rem; color: var(--accent);
-    background: var(--accent-soft); border: 1px solid var(--accent-soft-line);
+    font-family: var(--sans); font-size: 0.8rem; font-weight: 500; color: var(--ink-soft);
+    background: var(--surface); border: 1px solid var(--line);
     border-radius: 999px; padding: 0.4rem 0.9rem; margin-bottom: 1.6rem;
   }
-  .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex: none; }
+  .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); border: 1px solid var(--accent-ink); flex: none; }
   .hero h1 {
     font-family: var(--serif); font-weight: 500;
     font-size: clamp(2.4rem, 1.6rem + 4vw, 4.4rem);
-    line-height: 1.06; letter-spacing: -0.01em;
-    max-width: 42rem; margin: 0 auto;
+    line-height: 1.02; letter-spacing: -0.02em;
+    max-width: 44rem; margin: 0 auto;
   }
-  .hero h1 .accent-line { color: var(--accent); display: block; }
+  .hero h1 .accent-line { color: var(--ink); display: block; }
   .hero-sub {
     max-width: 34rem; margin: 1.6rem auto 0;
     font-size: 1.08rem; line-height: 1.6; color: var(--ink-soft);
@@ -249,21 +281,21 @@
   }
 
   /* ---------------- try it (real generator) ---------------- */
-  .try-it { max-width: 52rem; margin: 0 auto; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 1.8rem; box-shadow: 0 24px 55px -34px hsl(var(--shadow) / 0.65); }
+  .try-it { max-width: 52rem; margin: 0 auto; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 1.8rem; }
   .try-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.4rem; }
   .try-tab { flex: 1; font-family: var(--sans); font-size: 0.88rem; font-weight: 600; color: var(--ink-soft); background: var(--surface-raised); border: 1px solid var(--line); border-radius: 10px; padding: 0.6rem; cursor: pointer; }
-  .try-tab[aria-selected="true"] { color: var(--accent); background: var(--accent-soft); border-color: var(--accent-soft-line); }
+  .try-tab[aria-selected="true"] { color: var(--accent-ink); background: var(--accent); border-color: var(--accent-ink); }
   .try-panel { display: none; }
   .try-panel.is-active { display: block; }
   .try-toggle-row { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
   .try-toggle { flex: 1; font-family: var(--sans); font-size: 0.82rem; font-weight: 600; color: var(--ink-soft); background: var(--surface-raised); border: 1px solid var(--line); border-radius: 9px; padding: 0.55rem; cursor: pointer; }
-  .try-toggle[aria-pressed="true"] { color: var(--accent); background: var(--accent-soft); border-color: var(--accent-soft-line); }
+  .try-toggle[aria-pressed="true"] { color: var(--accent-ink); background: var(--accent-soft); border-color: var(--accent-soft-line); }
   .try-field { margin-bottom: 1rem; }
   .try-field label { display: block; font-family: var(--sans); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.5rem; }
   .try-textarea, .try-select, .try-file {
     width: 100%; font-family: var(--sans); font-size: 0.92rem; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 0.7rem 0.85rem;
   }
-  .try-textarea { min-height: 5rem; resize: vertical; font-family: var(--serif); line-height: 1.5; }
+  .try-textarea { min-height: 5rem; resize: vertical; font-family: var(--sans); line-height: 1.5; }
   .try-textarea::placeholder { color: var(--ink-faint); }
   .try-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
   @media (max-width: 30rem) { .try-row { grid-template-columns: 1fr; } }
@@ -272,7 +304,7 @@
   .try-status { font-family: var(--mono); font-size: 0.8rem; color: var(--ink-faint); margin-top: 0.9rem; }
   .try-error { font-family: var(--sans); font-size: 0.85rem; color: #e0554b; margin-top: 0.9rem; }
   .try-result { margin-top: 1.2rem; }
-  .try-result img, .try-result video { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; background: #0c0d12; }
+  .try-result img, .try-result video { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; background: #121212; }
 
   /* ---------------- auth modal ---------------- */
   .auth-overlay {
@@ -313,13 +345,13 @@
   .plan-card { margin: 0 0 1.2rem; padding: 1.1rem 1.2rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-raised); }
   .plan-title { font-family: var(--sans); font-size: 0.85rem; font-weight: 700; color: var(--ink); margin: 0 0 0.2rem; }
   .plan-audience { font-family: var(--sans); font-size: 0.78rem; color: var(--ink-faint); margin: 0 0 0.8rem; }
-  .plan-label { font-family: var(--sans); font-size: 0.64rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin: 0.9rem 0 0.4rem; }
+  .plan-label { font-family: var(--sans); font-size: 0.64rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-text); margin: 0.9rem 0 0.4rem; }
   .plan-label:first-of-type { margin-top: 0; }
   .plan-hook { font-family: var(--serif); font-size: 1.05rem; line-height: 1.4; color: var(--ink); margin: 0; }
   .plan-script { font-size: 0.86rem; line-height: 1.6; color: var(--ink-soft); margin: 0; }
   .plan-scene { border-top: 1px solid var(--line-soft); padding: 0.6rem 0; }
   .plan-scene:first-child { border-top: none; }
-  .plan-scene-head { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 0.66rem; color: var(--accent); margin-bottom: 0.3rem; }
+  .plan-scene-head { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 0.66rem; color: var(--accent-text); margin-bottom: 0.3rem; }
   .plan-scene-visual { font-size: 0.85rem; color: var(--ink); margin: 0 0 0.25rem; line-height: 1.45; }
   .plan-scene-meta { font-size: 0.76rem; color: var(--ink-faint); margin: 0; }
   .plan-cta { font-size: 0.9rem; font-weight: 700; color: var(--ink); margin: 0; }
@@ -327,8 +359,8 @@
   /* ---------------- showcase / templates ---------------- */
   .showcase-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; max-width: 54rem; margin: 0 auto; }
   @media (max-width: 36rem) { .showcase-grid { grid-template-columns: 1fr; } }
-  .showcase { position: relative; border-radius: 18px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 30px 70px -40px hsl(var(--shadow) / 0.7); }
-  .showcase-video { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; background: #0c0d12; }
+  .showcase { position: relative; border-radius: 16px; overflow: hidden; border: 1px solid var(--line); }
+  .showcase-video { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; background: #121212; }
   .showcase-label { position: absolute; left: 0.8rem; bottom: 0.8rem; font-family: var(--mono); font-size: 0.68rem; color: #fff; background: rgba(9, 11, 16, 0.55); padding: 0.25rem 0.55rem; border-radius: 5px; }
   .template-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; max-width: 76rem; margin: 0 auto; }
   @media (max-width: 52rem) { .template-grid { grid-template-columns: repeat(2, 1fr); } }
@@ -339,12 +371,11 @@
     width: 100%;
     padding: 0;
     border: 1px solid var(--line);
-    border-radius: 14px;
+    border-radius: 16px;
     overflow: hidden;
     background: var(--surface);
     cursor: pointer;
     text-align: left;
-    box-shadow: 0 20px 44px -30px hsl(var(--shadow) / 0.6);
   }
   .template-card:hover { border-color: var(--accent-soft-line); }
   .template-card:hover .template-video { transform: scale(1.04); }
@@ -357,11 +388,11 @@
     font-family: var(--mono);
     font-size: 0.68rem;
     font-weight: 700;
-    color: var(--accent);
+    color: var(--accent-text);
   }
-  .template-video { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; display: block; background: #0c0d12; transition: transform 0.4s ease; }
+  .template-video { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; display: block; background: #121212; transition: transform 0.4s ease; }
   .template-info { display: flex; flex-direction: column; gap: 0.2rem; padding: 0.85rem 1rem 1rem; }
-  .template-kind { font-family: var(--mono); font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; color: var(--accent); }
+  .template-kind { font-family: var(--mono); font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; color: var(--accent-text); }
   .template-title { font-family: var(--sans); font-size: 0.92rem; font-weight: 700; color: var(--ink); }
 
   /* ---------------- provider bar ---------------- */
@@ -375,10 +406,10 @@
   .section-head { max-width: 34rem; margin: 0 auto 3rem; text-align: center; }
   .eyebrow {
     font-family: var(--sans); font-size: 0.72rem; font-weight: 600;
-    letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-text);
     margin-bottom: 0.7rem;
   }
-  .section-head h2 { font-family: var(--serif); font-size: clamp(1.7rem, 1.3rem + 1.6vw, 2.3rem); font-weight: 500; line-height: 1.2; }
+  .section-head h2 { font-family: var(--serif); font-size: clamp(1.7rem, 1.3rem + 1.6vw, 2.3rem); font-weight: 500; line-height: 1.1; letter-spacing: -0.02em; color: var(--ink); }
   .section-head p { color: var(--ink-soft); font-size: 1.02rem; line-height: 1.6; margin-top: 0.9rem; }
 
   /* ---------------- feature tabs ---------------- */
@@ -388,7 +419,7 @@
     color: var(--ink-soft); background: var(--surface); border: 1px solid var(--line);
     border-radius: 999px; padding: 0.55rem 1.15rem; cursor: pointer;
   }
-  .tab-btn[aria-selected="true"] { color: var(--accent); background: var(--accent-soft); border-color: var(--accent-soft-line); }
+  .tab-btn[aria-selected="true"] { color: var(--accent-ink); background: var(--accent); border-color: var(--accent-ink); }
   .tab-panels { max-width: 50rem; margin: 0 auto; }
   .tab-panel { display: none; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: center; }
   .tab-panel.is-active { display: grid; }
@@ -397,29 +428,29 @@
   .tab-copy p { color: var(--ink-soft); line-height: 1.6; font-size: 0.98rem; }
   .tab-copy ul { margin: 1rem 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
   .tab-copy li { font-size: 0.9rem; color: var(--ink-soft); display: flex; gap: 0.55rem; }
-  .tab-copy li::before { content: "→"; color: var(--accent); font-family: var(--mono); }
+  .tab-copy li::before { content: "→"; color: var(--accent-text); font-family: var(--mono); }
 
   .mock-card {
-    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
-    padding: 1.4rem; box-shadow: 0 20px 44px -30px hsl(var(--shadow) / 0.6);
+    background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+    padding: 1.4rem;
   }
-  .mock-hook-label { font-family: var(--sans); font-size: 0.66rem; font-weight: 700; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.5rem; }
+  .mock-hook-label { font-family: var(--sans); font-size: 0.66rem; font-weight: 700; letter-spacing: 0.1em; color: var(--accent-text); margin-bottom: 0.5rem; }
   .mock-hook { font-family: var(--serif); font-size: 1.05rem; line-height: 1.4; color: var(--ink); margin-bottom: 0.9rem; }
   .mock-scene-list { display: flex; flex-direction: column; gap: 0.5rem; }
   .mock-scene { display: flex; gap: 0.6rem; align-items: baseline; }
-  .mock-scene-num { font-family: var(--mono); font-size: 0.68rem; font-weight: 700; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent-soft-line); border-radius: 4px; padding: 0.1em 0.4em; flex: none; }
+  .mock-scene-num { font-family: var(--mono); font-size: 0.68rem; font-weight: 700; color: var(--accent-ink); background: var(--accent-soft); border: 1px solid var(--accent-soft-line); border-radius: 4px; padding: 0.1em 0.4em; flex: none; }
   .mock-scene-text { font-family: var(--sans); font-size: 0.82rem; color: var(--ink-soft); }
   .mock-chip-row { display: flex; gap: 0.4rem; margin-top: 0.9rem; flex-wrap: wrap; }
   .mock-chip { font-family: var(--mono); font-size: 0.68rem; color: var(--ink-faint); border: 1px solid var(--line); border-radius: 999px; padding: 0.25rem 0.6rem; }
   .mock-image-tile { aspect-ratio: 1; border-radius: 10px; background: linear-gradient(160deg, var(--accent-soft), var(--surface-raised)); display: flex; align-items: center; justify-content: center; }
-  .mock-image-tile span { font-family: var(--mono); font-size: 0.7rem; color: var(--accent); }
+  .mock-image-tile span { font-family: var(--mono); font-size: 0.7rem; color: var(--accent-ink); }
   .mock-style-row { display: flex; gap: 0.4rem; margin-top: 0.9rem; flex-wrap: wrap; }
 
   /* ---------------- how it works ---------------- */
   .how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; max-width: 60rem; margin: 0 auto 3rem; }
   @media (max-width: 46rem) { .how-grid { grid-template-columns: 1fr; } }
   .how-step { text-align: left; }
-  .how-num { font-family: var(--mono); font-size: 0.78rem; color: var(--accent); margin-bottom: 0.6rem; }
+  .how-num { font-family: var(--mono); font-size: 0.78rem; color: var(--accent-text); margin-bottom: 0.6rem; }
   .how-step h3 { font-family: var(--serif); font-size: 1.15rem; font-weight: 500; margin-bottom: 0.4rem; }
   .how-step p { color: var(--ink-soft); font-size: 0.92rem; line-height: 1.55; }
 
@@ -435,7 +466,7 @@
   /* ---------------- benefit cards ---------------- */
   .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 62rem; margin: 0 auto; }
   @media (max-width: 46rem) { .card-grid { grid-template-columns: 1fr; } }
-  .benefit-card { border-top: 2px solid var(--accent); background: var(--surface); border: 1px solid var(--line); border-top-width: 2px; border-radius: 0 0 12px 12px; padding: 1.6rem; }
+  .benefit-card { background: var(--surface); border: 1px solid var(--line); border-top: 2px solid var(--accent); border-radius: 0 0 16px 16px; padding: 1.6rem; }
   .benefit-card h3 { font-family: var(--serif); font-size: 1.1rem; font-weight: 500; margin-bottom: 0.6rem; }
   .benefit-card p { color: var(--ink-soft); font-size: 0.92rem; line-height: 1.55; }
 
@@ -445,33 +476,33 @@
   .switch::after { content: ""; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%; background: var(--surface); transition: transform 0.18s ease; }
   .switch[aria-checked="true"] { background: var(--accent); }
   .switch[aria-checked="true"]::after { transform: translateX(18px); }
-  .save-pill { font-family: var(--mono); font-size: 0.72rem; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent-soft-line); border-radius: 999px; padding: 0.15rem 0.55rem; }
+  .save-pill { font-family: var(--mono); font-size: 0.72rem; color: var(--accent-ink); background: var(--accent-soft); border: 1px solid var(--accent-soft-line); border-radius: 999px; padding: 0.15rem 0.55rem; }
 
   .price-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 62rem; margin: 0 auto; align-items: stretch; }
   @media (max-width: 46rem) { .price-grid { grid-template-columns: 1fr; } }
   .price-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 1.8rem; display: flex; flex-direction: column; }
-  .price-card.featured { border-color: var(--accent-soft-line); box-shadow: 0 24px 50px -32px hsl(var(--shadow) / 0.65); }
+  .price-card.featured { border: 1px solid var(--accent-ink); background: var(--accent-soft); }
   .price-tier { font-family: var(--sans); font-weight: 700; font-size: 0.95rem; margin-bottom: 0.3rem; }
   .price-tier-desc { color: var(--ink-faint); font-size: 0.82rem; margin-bottom: 1.3rem; }
   .price-amount { font-family: var(--mono); font-size: 2.1rem; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
   .price-amount span { font-size: 0.95rem; color: var(--ink-faint); font-weight: 500; }
   .price-list { list-style: none; margin: 1.4rem 0 1.6rem; padding: 0; display: flex; flex-direction: column; gap: 0.6rem; flex: 1; }
   .price-list li { font-size: 0.86rem; color: var(--ink-soft); display: flex; gap: 0.5rem; }
-  .price-list li::before { content: "✓"; color: var(--accent); font-family: var(--mono); }
+  .price-list li::before { content: "✓"; color: var(--accent-text); font-family: var(--mono); }
   .pay-options { display: flex; flex-direction: column; gap: 0.6rem; }
   .pay-stripe-btn { width: 100%; }
   .pay-stripe-btn[disabled] { opacity: 0.65; cursor: progress; }
   .paypal-btn-container { min-height: 45px; }
 
   /* ---------------- cta band ---------------- */
-  .cta-band { background: var(--surface-raised); border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); }
+  .cta-band { border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); }
   .cta-inner { text-align: center; padding: 4.5rem 0; }
-  .cta-inner h2 { font-family: var(--serif); font-size: clamp(1.7rem, 1.3rem + 1.6vw, 2.2rem); font-weight: 500; margin-bottom: 0.7rem; }
+  .cta-inner h2 { font-family: var(--serif); font-size: clamp(1.7rem, 1.3rem + 1.6vw, 2.2rem); font-weight: 500; margin-bottom: 0.7rem; letter-spacing: -0.02em; line-height: 1.1; color: var(--ink); }
   .cta-inner p { color: var(--ink-soft); max-width: 30rem; margin: 0 auto 1.8rem; }
   .cta-form { display: flex; gap: 0.6rem; max-width: 26rem; margin: 0 auto; }
   .cta-form input { flex: 1; padding: 0.75rem 1rem; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font-family: var(--sans); font-size: 0.92rem; }
   .cta-form input::placeholder { color: var(--ink-faint); }
-  .cta-success { display: none; align-items: center; justify-content: center; gap: 0.5rem; color: var(--accent); font-family: var(--sans); font-size: 0.92rem; }
+  .cta-success { display: none; align-items: center; justify-content: center; gap: 0.5rem; color: var(--accent-text); font-family: var(--sans); font-size: 0.92rem; }
   .cta-success.is-visible { display: flex; }
   .cta-form.is-hidden { display: none; }
 
@@ -535,7 +566,7 @@
         <button class="nav-logout" id="navBillingBtn" type="button">Manage plan</button>
         <button class="nav-logout" id="navLogoutBtn" type="button">Log out</button>
       </span>
-      <a class="btn btn-primary" href="#" id="navGetStartedBtn">Get started</a>
+      <a class="btn btn-dark" href="#" id="navGetStartedBtn">Get started</a>
       <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
@@ -624,7 +655,7 @@
     <div class="stat-bar">
       <div class="stat"><div class="stat-num">4</div><div class="stat-label">video renderers</div></div>
       <div class="stat"><div class="stat-num">6-90s</div><div class="stat-label">ad lengths</div></div>
-      <div class="stat"><div class="stat-num">1080p</div><div class="stat-label">cinematic output</div></div>
+      <div class="stat"><div class="stat-num">4K</div><div class="stat-label">cinematic output</div></div>
       <div class="stat"><div class="stat-num">Free</div><div class="stat-label">to start</div></div>
     </div>
   </section>
@@ -655,7 +686,6 @@
       <div class="section-head fade-in">
         <p class="eyebrow">Try it now</p>
         <h2>Generate a real video or image</h2>
-        <p>This calls the live Pheli AI server directly — no mockups. Needs the backend running on localhost:4000.</p>
       </div>
 
       <div class="try-it fade-in">
@@ -743,6 +773,14 @@
               </select>
             </div>
           </div>
+          <div class="try-field">
+            <label for="try-cinematic-aspect">Aspect ratio</label>
+            <select class="try-select" id="try-cinematic-aspect">
+              <option value="horizontal">16:9 — Landscape</option>
+              <option value="vertical">9:16 — Vertical</option>
+              <option value="square">1:1 — Square (Kling &amp; Seedance)</option>
+            </select>
+          </div>
 
           <div style="display:flex; gap:0.6rem; margin-bottom:0.3rem;">
             <button class="btn btn-ghost" id="try-cinematic-plan" type="button" style="flex:1; justify-content:center; border:1px solid var(--line);">Plan</button>
@@ -814,13 +852,23 @@
               </select>
             </div>
           </div>
-          <div class="try-field">
-            <label for="try-video-quality">Quality</label>
-            <select class="try-select" id="try-video-quality">
-              <option value="standard">720p</option>
-              <option value="cinematic">1080p</option>
-              <option value="4k">4K</option>
-            </select>
+          <div class="try-row">
+            <div class="try-field">
+              <label for="try-video-quality">Quality</label>
+              <select class="try-select" id="try-video-quality">
+                <option value="standard">720p</option>
+                <option value="cinematic">1080p</option>
+                <option value="4k">4K</option>
+              </select>
+            </div>
+            <div class="try-field">
+              <label for="try-video-aspect">Aspect ratio</label>
+              <select class="try-select" id="try-video-aspect">
+                <option value="horizontal">16:9 — Landscape</option>
+                <option value="vertical">9:16 — Vertical</option>
+                <option value="square">1:1 — Square (Kling &amp; Seedance)</option>
+              </select>
+            </div>
           </div>
 
           <div style="display:flex; gap:0.6rem; margin-bottom:0.3rem;">
@@ -863,12 +911,22 @@
               </select>
             </div>
           </div>
-          <div class="try-field">
-            <label for="try-image-quality">Resolution</label>
-            <select class="try-select" id="try-image-quality">
-              <option value="standard">Standard</option>
-              <option value="4k">4K</option>
-            </select>
+          <div class="try-row">
+            <div class="try-field">
+              <label for="try-image-quality">Resolution</label>
+              <select class="try-select" id="try-image-quality">
+                <option value="standard">Standard</option>
+                <option value="4k">4K</option>
+              </select>
+            </div>
+            <div class="try-field">
+              <label for="try-image-aspect">Aspect ratio</label>
+              <select class="try-select" id="try-image-aspect">
+                <option value="square">1:1 — Square</option>
+                <option value="horizontal">16:9 — Landscape</option>
+                <option value="vertical">9:16 — Vertical</option>
+              </select>
+            </div>
           </div>
 
           <button class="btn btn-primary try-submit" id="try-image-submit" type="button">Generate image</button>
@@ -949,7 +1007,7 @@
     </div>
   </section>
 
-  <section class="section" id="templates">
+  <section class="section band-dark" id="templates">
     <div class="wrap">
       <div class="section-head fade-in">
         <p class="eyebrow">Templates</p>
@@ -1131,6 +1189,7 @@
             <li>Unlimited ad concepts</li>
             <li>5 image generations / day</li>
             <li>6 video renders / mo</li>
+            <li>4K quality &amp; Seedance 2.5</li>
             <li>Community render queue</li>
           </ul>
           <div class="pay-options">
@@ -1174,7 +1233,7 @@
     </div>
   </section>
 
-  <section class="cta-band">
+  <section class="cta-band band-dark">
     <div class="wrap cta-inner fade-in">
       <h2>Get early access to what's next</h2>
       <p>Longer ads, more platforms, and a desktop app — join the list and hear first.</p>
@@ -1552,10 +1611,11 @@
     applyProGating(false);
   }
 
-  // 4K and Seedance 2.5 are Pro-exclusive server-side — this keeps the dropdowns
-  // themselves honest about that instead of only erroring on submit. Disabling
-  // rather than removing the <option> so it's still visible as something to
-  // upgrade for, and resets the selection off it if it was already picked.
+  // 4K and Seedance 2.5 are paid-plan-exclusive server-side — this keeps the
+  // dropdowns themselves honest about that instead of only erroring on submit.
+  // Disabling rather than removing the <option> so it's still visible as
+  // something to upgrade for, and resets the selection off it if it was
+  // already picked.
   var PRO_ONLY_QUALITY_SELECTS = ['try-cinematic-quality', 'try-video-quality'];
   var PRO_ONLY_MODEL_SELECTS = ['try-cinematic-model', 'try-video-model'];
   function applyProGating(isPro) {
@@ -1565,7 +1625,7 @@
       var option = select.querySelector('option[value="4k"]');
       if (!option) return;
       option.disabled = !isPro;
-      option.textContent = isPro ? '4K' : '4K (Plus)';
+      option.textContent = isPro ? '4K' : '4K (paid plans)';
       if (!isPro && select.value === '4k') { select.value = 'standard'; }
     });
     PRO_ONLY_MODEL_SELECTS.forEach(function (id) {
@@ -1573,19 +1633,19 @@
       var option = select.querySelector('option[value="seedance-2-5"]');
       if (!option) return;
       option.disabled = !isPro;
-      option.textContent = isPro ? 'Seedance 2.5' : 'Seedance 2.5 (Plus)';
+      option.textContent = isPro ? 'Seedance 2.5' : 'Seedance 2.5 (paid plans)';
       if (!isPro && select.value === 'seedance-2-5' && !select.disabled) { select.value = 'sora-2'; }
     });
   }
 
-  // "isPro" here really means "Plus or Pro" — both tiers unlock 4K and
-  // Seedance 2.5, matching the server-side gate in checkProFeature().
+  // "isPro" here really means "any paid plan" — Basic, Plus, and Pro all
+  // unlock 4K and Seedance 2.5, matching the server-side gate in checkProFeature().
   function refreshProGating() {
     var token = localStorage.getItem(AUTH_TOKEN_KEY);
     if (!token) { applyProGating(false); return; }
     fetch(API_BASE + '/api/checkout/subscription', { headers: { Authorization: 'Bearer ' + token } })
       .then(function (res) { return res.json(); })
-      .then(function (body) { applyProGating(!!(body.active && (body.tier === 'pro' || body.tier === 'plus'))); })
+      .then(function (body) { applyProGating(!!(body.active && (body.tier === 'pro' || body.tier === 'plus' || body.tier === 'basic'))); })
       .catch(function () { applyProGating(false); });
   }
 
@@ -1934,6 +1994,7 @@
     var model = document.getElementById('try-cinematic-model').value;
     var seconds = document.getElementById('try-cinematic-seconds').value;
     var quality = document.getElementById('try-cinematic-quality').value;
+    var aspectRatio = document.getElementById('try-cinematic-aspect').value;
 
     tryCinematicSubmit.disabled = true;
     tryCinematicResult.hidden = true;
@@ -1944,7 +2005,7 @@
         return fetch(API_BASE + '/api/video/long', {
           method: 'POST',
           headers: jsonHeaders(),
-          body: JSON.stringify({ prompt: prompt, model: model, seconds: seconds, image: results[0], referenceImages: results[1], quality: quality }),
+          body: JSON.stringify({ prompt: prompt, model: model, seconds: seconds, image: results[0], referenceImages: results[1], quality: quality, aspectRatio: aspectRatio }),
         });
       })
       .then(function (res) { return res.json(); })
@@ -2003,7 +2064,7 @@
             '<div class="plan-scene-head"><span>SCENE ' + scene.number + '</span><span>' + scene.duration + '</span></div>' +
             '<p class="plan-scene-visual">' + scene.visual + '</p>' +
             '<p class="plan-scene-meta">' + scene.camera + '</p>' +
-            (scene.onScreenText ? '<p class="plan-scene-meta" style="color:var(--accent);font-weight:700;">' + scene.onScreenText + '</p>' : '') +
+            (scene.onScreenText ? '<p class="plan-scene-meta" style="color:var(--accent-text);font-weight:700;">' + scene.onScreenText + '</p>' : '') +
             '</div>';
         }).join('');
         tryVideoPlanResult.innerHTML =
@@ -2073,6 +2134,7 @@
     var model = document.getElementById('try-video-model').value;
     var seconds = document.getElementById('try-video-seconds').value;
     var quality = document.getElementById('try-video-quality').value;
+    var aspectRatio = document.getElementById('try-video-aspect').value;
 
     tryVideoSubmit.disabled = true;
     tryVideoResult.hidden = true;
@@ -2083,7 +2145,7 @@
         return fetch(API_BASE + '/api/video/long', {
           method: 'POST',
           headers: jsonHeaders(),
-          body: JSON.stringify({ prompt: prompt, model: model, seconds: seconds, image: results[0], referenceImages: results[1], quality: quality }),
+          body: JSON.stringify({ prompt: prompt, model: model, seconds: seconds, image: results[0], referenceImages: results[1], quality: quality, aspectRatio: aspectRatio }),
         });
       })
       .then(function (res) { return res.json(); })
@@ -2120,6 +2182,7 @@
     var model = document.getElementById('try-image-model').value;
     var style = document.getElementById('try-image-style').value;
     var quality = document.getElementById('try-image-quality').value;
+    var aspectRatio = document.getElementById('try-image-aspect').value;
 
     tryImageSubmit.disabled = true;
     tryImageResult.hidden = true;
@@ -2128,7 +2191,7 @@
     fetch(API_BASE + '/api/image', {
       method: 'POST',
       headers: jsonHeaders(),
-      body: JSON.stringify({ prompt: prompt, model: model, style: style, quality: quality }),
+      body: JSON.stringify({ prompt: prompt, model: model, style: style, quality: quality, aspectRatio: aspectRatio }),
     })
       .then(function (res) { return res.json(); })
       .then(function (body) {

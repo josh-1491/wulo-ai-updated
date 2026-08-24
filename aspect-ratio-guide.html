@@ -5,66 +5,70 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Aspect Ratio Guide — Pheli AI</title>
 <meta name="description" content="Which orientation to render for TikTok, Reels, Shorts, YouTube, and Facebook, and how to compose for each." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ground: #000000; --surface: #17191f; --surface-raised: #1d1f26;
-    --ink: #f2f3f6; --ink-soft: #9aa1b2; --ink-faint: #6b7284;
-    --line: #2a2e3b; --line-soft: #23262f;
-    --accent: #e3a15c; --accent-ink: #1a1206; --accent-soft: rgba(227, 161, 92, 0.14); --accent-soft-line: rgba(227, 161, 92, 0.32);
+    color-scheme: light;
+    --ground: #ffffff; --surface: #ffffff; --surface-raised: #f2f1f0;
+    --ink: #0c0a09; --ink-soft: #4d4d51; --ink-faint: #71737a;
+    --line: #e6e6e7; --line-soft: #f0f0ef;
+    --accent: #96ff1a; --accent-ink: #083300; --accent-text: #3c7a00; --accent-soft: #e6ffc8; --accent-soft-line: #c2ec8a;
     --shadow: 220 30% 5%;
-    --serif: ui-serif, Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
-    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, sans-serif;
+    --serif: "Playfair Display", "Didot", "Bodoni MT", Georgia, serif;
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, sans-serif;
     --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --ground: #000000; --surface: #17191f; --surface-raised: #1d1f26;
-      --ink: #f2f3f6; --ink-soft: #9aa1b2; --ink-faint: #6b7284;
-      --line: #2a2e3b; --line-soft: #23262f;
-      --accent: #e3a15c; --accent-ink: #1a1206;
-      --accent-soft: rgba(227, 161, 92, 0.14); --accent-soft-line: rgba(227, 161, 92, 0.32);
+      --ground: #ffffff; --surface: #ffffff; --surface-raised: #f2f1f0;
+      --ink: #0c0a09; --ink-soft: #4d4d51; --ink-faint: #71737a;
+      --line: #e6e6e7; --line-soft: #f0f0ef;
+      --accent: #96ff1a; --accent-ink: #083300; --accent-text: #3c7a00;
+      --accent-soft: #e6ffc8; --accent-soft-line: #c2ec8a;
     }
   }
   :root[data-theme="dark"] {
-    --ground: #000000; --surface: #17191f; --surface-raised: #1d1f26;
-    --ink: #f2f3f6; --ink-soft: #9aa1b2; --ink-faint: #6b7284;
-    --line: #2a2e3b; --line-soft: #23262f;
-    --accent: #e3a15c; --accent-ink: #1a1206;
-    --accent-soft: rgba(227, 161, 92, 0.14); --accent-soft-line: rgba(227, 161, 92, 0.32);
+    --ground: #ffffff; --surface: #ffffff; --surface-raised: #f2f1f0;
+    --ink: #0c0a09; --ink-soft: #4d4d51; --ink-faint: #71737a;
+    --line: #e6e6e7; --line-soft: #f0f0ef;
+    --accent: #96ff1a; --accent-ink: #083300; --accent-text: #3c7a00;
+    --accent-soft: #e6ffc8; --accent-soft-line: #c2ec8a;
   }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
   a { color: inherit; }
   img, svg { display: block; max-width: 100%; }
-  ::selection { background: var(--accent-soft); color: var(--ink); }
-  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+  ::selection { background: #d6ffa6; color: #083300; }
+  :focus-visible { outline: 2px solid #3c7a00; outline-offset: 2px; border-radius: 4px; }
 
   .nav { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--ground) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line-soft); }
   .nav-row { max-width: 46rem; margin: 0 auto; padding: 0.95rem 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
   .brand { display: flex; align-items: center; gap: 0.55rem; text-decoration: none; }
-  .brand-mark { width: 24px; height: 20px; color: #ffffff; flex: none; }
+  .brand-mark { width: 24px; height: 20px; color: var(--ink); flex: none; }
   .back-link { font-family: var(--sans); font-size: 0.85rem; color: var(--ink-soft); text-decoration: none; }
   .back-link:hover { color: var(--ink); }
 
   .wrap { max-width: 46rem; margin: 0 auto; padding: 3.5rem 1.5rem 5rem; }
-  .eyebrow { font-family: var(--sans); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin: 0 0 0.9rem; }
-  h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(1.9rem, 1.5rem + 2vw, 2.7rem); line-height: 1.12; margin: 0 0 1rem; text-wrap: balance; }
+  .eyebrow { font-family: var(--sans); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-text); margin: 0 0 0.9rem; }
+  h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(1.9rem, 1.5rem + 2vw, 2.7rem); line-height: 1.05; letter-spacing: -0.02em; margin: 0 0 1rem; text-wrap: balance; }
   .lede { font-size: 1.08rem; line-height: 1.6; color: var(--ink-soft); margin: 0 0 3rem; max-width: 38rem; }
 
-  h2 { font-family: var(--serif); font-weight: 500; font-size: 1.5rem; margin: 3rem 0 1rem; }
+  h2 { font-family: var(--serif); font-weight: 500; font-size: 1.5rem; letter-spacing: -0.02em; line-height: 1.05; margin: 3rem 0 1rem; }
   h2:first-of-type { margin-top: 0; }
   p { font-size: 1rem; line-height: 1.7; color: var(--ink-soft); margin: 0 0 1.1rem; }
   strong { color: var(--ink); font-weight: 600; }
   li { font-size: 1rem; line-height: 1.65; color: var(--ink-soft); }
-  li::marker { color: var(--accent); }
+  li::marker { color: var(--accent-text); }
 
   .orientation-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin: 1.4rem 0 2rem; }
   @media (max-width: 36rem) { .orientation-grid { grid-template-columns: 1fr; } }
-  .orientation-card { border: 1px solid var(--line); border-radius: 14px; padding: 1.3rem; background: var(--surface); }
+  .orientation-card { border: 1px solid var(--line); border-radius: 16px; padding: 1.3rem; background: var(--surface); }
   .frame { background: linear-gradient(160deg, var(--accent-soft), var(--surface-raised)); border: 1px solid var(--line-soft); border-radius: 8px; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; }
   .frame.vertical { width: 68px; aspect-ratio: 9 / 16; }
   .frame.horizontal { width: 130px; aspect-ratio: 16 / 9; }
-  .frame span { font-family: var(--mono); font-size: 0.68rem; color: var(--accent); }
+  .frame span { font-family: var(--mono); font-size: 0.68rem; color: var(--accent-text); }
   .orientation-card h3 { font-family: var(--serif); font-size: 1.15rem; font-weight: 500; margin: 0 0 0.4rem; text-align: center; }
   .orientation-card .platforms { text-align: center; font-family: var(--mono); font-size: 0.72rem; color: var(--ink-faint); margin-bottom: 1rem; }
   .orientation-card ul { margin: 0; padding-left: 1.2rem; }
@@ -72,14 +76,15 @@
 
   table { width: 100%; border-collapse: collapse; margin: 1.4rem 0 2rem; font-size: 0.92rem; }
   th, td { text-align: left; padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--line-soft); }
-  th { font-family: var(--sans); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint); }
+  th { font-family: var(--sans); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint); background: var(--surface-raised); border-bottom: 1px solid var(--line); }
   td { color: var(--ink-soft); }
   td:first-child, th:first-child { color: var(--ink); font-weight: 600; }
   .table-wrap { overflow-x: auto; }
 
-  .cta-band { margin-top: 3.5rem; padding: 1.8rem; border-radius: 14px; background: var(--surface-raised); border: 1px solid var(--line-soft); text-align: center; }
+  .cta-band { margin-top: 3.5rem; padding: 1.8rem; border-radius: 16px; background: var(--surface-raised); border: 1px solid var(--line-soft); text-align: center; }
   .cta-band p { margin: 0 0 1rem; }
-  .btn { display: inline-flex; align-items: center; justify-content: center; font-family: var(--sans); font-weight: 600; font-size: 0.9rem; border-radius: 10px; padding: 0.7rem 1.3rem; text-decoration: none; background: var(--accent); color: var(--accent-ink); }
+  .btn { display: inline-flex; align-items: center; justify-content: center; font-family: var(--sans); font-weight: 600; font-size: 0.9rem; border-radius: 10px; padding: 0.7rem 1.3rem; text-decoration: none; background: var(--accent); color: var(--accent-ink); border: 1px solid var(--accent-ink); box-shadow: none; }
+  .btn:hover { filter: brightness(0.97); }
 </style>
 </head>
 <body>
