@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Model Comparison — Pheli AI</title>
-<meta name="description" content="Sora 2, Veo 3, Kling, and Seedance for video, plus GPT Image 1 and Nano Banana for images — strengths, quality tiers, and when to pick each one." />
+<meta name="description" content="Sora 2, Veo 3, and Seedance for video, plus GPT Image 1 and Nano Banana for images — strengths, quality tiers, and when to pick each one." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
@@ -63,8 +63,6 @@
   li::marker { color: var(--accent-text); }
 
   .model-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; margin: 1.4rem 0 2.5rem; }
-  .model-grid.model-grid-4 { grid-template-columns: repeat(4, 1fr); }
-  @media (max-width: 56rem) { .model-grid.model-grid-4 { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 46rem) { .model-grid { grid-template-columns: 1fr; } }
   .model-card { border: 1px solid var(--line); border-radius: 16px; padding: 1.4rem; background: var(--surface); }
   .model-card.featured { border-color: var(--accent-soft-line); }
@@ -105,14 +103,14 @@
   <p class="eyebrow">Resources</p>
   <h1>Every model, and which one to pick</h1>
   <p class="lede">
-    Four video renderers, three image models — all available on every Pheli AI
+    Three video renderers, three image models — all available on every Pheli AI
     generation, right from the model picker next to the prompt box. Here's what
     actually differs between them, so picking one isn't a guess.
   </p>
 
   <h2>Video models</h2>
 
-  <div class="model-grid model-grid-4">
+  <div class="model-grid">
     <div class="model-card featured">
       <div class="model-provider">OpenAI</div>
       <div class="model-name">Sora 2</div>
@@ -133,17 +131,6 @@
         <li>Flexible durations, not locked to a fixed set like Sora</li>
         <li>"Continue this clip" genuinely extends the same take, not a new one</li>
         <li>1080p available under Cinematic quality</li>
-      </ul>
-    </div>
-    <div class="model-card">
-      <div class="model-provider">Kuaishou</div>
-      <div class="model-name">Kling</div>
-      <div class="model-best">Best for: fast iteration</div>
-      <ul>
-        <li>Two model tiers — 2.1 and 2.5 Turbo — pick speed vs. quality directly</li>
-        <li>Fixed 5s or 10s clips, "pro" mode for the higher-fidelity render tier</li>
-        <li>Strong at stylized and illustrative motion, not just photoreal</li>
-        <li>No clip continuation yet — each render is a standalone clip</li>
       </ul>
     </div>
     <div class="model-card">
@@ -168,7 +155,6 @@
       <tbody>
         <tr><td>Sora 2</td><td>Yes, native</td><td>4 / 8 / 12 / 16 / 20s</td><td>Yes (new segment)</td><td>1080p (pro)</td></tr>
         <tr><td>Veo 3</td><td>No</td><td>Flexible</td><td>Yes (true extend)</td><td>1080p</td></tr>
-        <tr><td>Kling</td><td>No</td><td>5s or 10s</td><td>Not yet</td><td>Pro mode</td></tr>
         <tr><td>Seedance</td><td>Yes, native</td><td>4–30s</td><td>Not yet</td><td>4K (4k-sr)</td></tr>
       </tbody>
     </table>
@@ -179,10 +165,9 @@
     If the ad needs a voiceover or sound design baked into the render itself, <strong>Sora 2</strong>
     or <strong>Seedance</strong> are the only two here that generate audio natively. If the shot
     depends on something moving convincingly — water, cloth, a crowd — <strong>Veo 3</strong> tends
-    to hold up best under scrutiny. If you're iterating fast on a concept and want to try a lot of
-    variations quickly, <strong>Kling</strong>'s range of speed/quality tiers makes that cheap. If
-    you need real 4K output or you're animating a specific character/product across multiple
-    reference images, <strong>Seedance</strong> is the only one of the four that can do either.
+    to hold up best under scrutiny. If you need real 4K output or you're animating a specific
+    character/product across multiple reference images, <strong>Seedance</strong> is the only one
+    of the three that can do either.
   </p>
 
   <h2>Image models</h2>
