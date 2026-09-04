@@ -324,6 +324,16 @@
   .auth-field label { display: block; font-family: var(--sans); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.5rem; }
   .auth-input { width: 100%; font-family: var(--sans); font-size: 0.92rem; color: var(--ink); background: var(--ground); border: 1px solid var(--line); border-radius: 10px; padding: 0.7rem 0.85rem; }
   .auth-input::placeholder { color: var(--ink-faint); }
+  .auth-password-row { position: relative; }
+  .auth-password-row .auth-input { padding-right: 2.6rem; }
+  .auth-password-toggle {
+    position: absolute; top: 50%; right: 0.6rem; transform: translateY(-50%);
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 1.9rem; height: 1.9rem; padding: 0; background: none; border: none;
+    color: var(--ink-faint); cursor: pointer; border-radius: 6px;
+  }
+  .auth-password-toggle:hover { color: var(--ink); }
+  .auth-eye-icon.is-hidden { display: none; }
   .auth-submit { width: 100%; margin-top: 0.3rem; }
   .auth-submit[disabled] { opacity: 0.65; cursor: progress; }
   .auth-status { font-family: var(--mono); font-size: 0.8rem; color: var(--ink-faint); margin-top: 0.9rem; }
@@ -1327,7 +1337,13 @@
       </div>
       <div class="auth-field">
         <label for="signup-password">Password</label>
-        <input class="auth-input" id="signup-password" type="password" autocomplete="new-password" placeholder="At least 8 characters" />
+        <div class="auth-password-row">
+          <input class="auth-input" id="signup-password" type="password" autocomplete="new-password" placeholder="At least 8 characters" />
+          <button class="auth-password-toggle" id="signupPasswordToggle" type="button" aria-label="Show password" aria-pressed="false">
+            <svg class="auth-eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="auth-eye-icon is-hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.6 21.6 0 0 1 5.06-6.06M9.9 4.24A10.7 10.7 0 0 1 12 4c7 0 11 8 11 8a21.6 21.6 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg>
+          </button>
+        </div>
       </div>
       <button class="btn btn-primary auth-submit" id="signupSubmit" type="button">Create account</button>
       <p class="auth-status" id="signupStatus" hidden></p>
@@ -1720,6 +1736,19 @@
         setTryError(loginStatus, loginError, err.message || 'Could not reach the backend at ' + API_BASE + ' — is the server running?');
       })
       .finally(function () { loginSubmit.disabled = false; });
+  });
+
+  // Show/hide the signup password
+  var signupPasswordInput = document.getElementById('signup-password');
+  var signupPasswordToggle = document.getElementById('signupPasswordToggle');
+  signupPasswordToggle.addEventListener('click', function () {
+    var isHidden = signupPasswordInput.type === 'password';
+    signupPasswordInput.type = isHidden ? 'text' : 'password';
+    signupPasswordToggle.setAttribute('aria-pressed', String(isHidden));
+    signupPasswordToggle.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+    var icons = signupPasswordToggle.querySelectorAll('.auth-eye-icon');
+    icons[0].classList.toggle('is-hidden', isHidden);
+    icons[1].classList.toggle('is-hidden', !isHidden);
   });
 
   // Sign up
