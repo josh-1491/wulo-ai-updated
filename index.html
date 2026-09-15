@@ -1877,6 +1877,59 @@
     return wrap;
   }
 
+  // Lets a signed-in user connect Wulo AI's generation tools (image/video/ad
+  // concept) to Claude Desktop or any other MCP client, gated by the exact
+  // same plan/usage limits as the website — see server/index.ts's /mcp route.
+  function renderMcpConnectSection() {
+    var wrap = document.createElement('div');
+    wrap.style.marginTop = '1rem';
+    wrap.style.paddingTop = '1rem';
+    wrap.style.borderTop = '1px solid var(--line-soft)';
+
+    var heading = document.createElement('p');
+    heading.className = 'plan-label';
+    heading.style.margin = '0 0 0.4rem';
+    heading.textContent = 'Connect via MCP';
+    wrap.appendChild(heading);
+
+    var note = document.createElement('p');
+    note.className = 'auth-status';
+    note.style.margin = '0 0 0.6rem';
+    note.textContent = 'Call Wulo AI\'s image, video, and ad-concept tools from Claude Desktop or any MCP client. Uses your account\'s plan limits.';
+    wrap.appendChild(note);
+
+    var btn = document.createElement('button');
+    btn.className = 'btn btn-ghost';
+    btn.style.width = '100%';
+    btn.type = 'button';
+    btn.textContent = 'Copy MCP config';
+    btn.addEventListener('click', function () {
+      var authToken = localStorage.getItem(AUTH_TOKEN_KEY);
+      var config = {
+        mcpServers: {
+          'wulo-ai': {
+            type: 'http',
+            url: API_BASE + '/mcp',
+            headers: { Authorization: 'Bearer ' + authToken },
+          },
+        },
+      };
+      var text = JSON.stringify(config, null, 2);
+      var done = function () {
+        var original = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(function () { btn.textContent = original; }, 1600);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(function () { window.prompt('Copy this config:', text); });
+      } else {
+        window.prompt('Copy this config:', text);
+      }
+    });
+    wrap.appendChild(btn);
+    return wrap;
+  }
+
   function loadBillingStatus() {
     billingBody.innerHTML = '';
     setTryStatus(billingStatus, billingError, 'Loading…');
@@ -1889,6 +1942,7 @@
         if (!body.active) {
           billingBody.innerHTML = '<p class="auth-status" style="margin:0;">No active subscription. <a href="#pricing">Choose a plan</a>.</p>';
           billingBody.appendChild(renderBuyVideoPackButton(body.bonusVideoCredits || 0));
+          billingBody.appendChild(renderMcpConnectSection());
           return;
         }
         var name = PLAN_NAMES[body.tier] || 'Wulo AI';
@@ -1905,6 +1959,7 @@
           billingBody.appendChild(renderBillingCancelButton(body.currentPeriodEnd));
         }
         billingBody.appendChild(renderBuyVideoPackButton(body.bonusVideoCredits || 0));
+        billingBody.appendChild(renderMcpConnectSection());
       })
       .catch(function (err) {
         setTryError(billingStatus, billingError, err.message || 'Could not load your subscription.');
