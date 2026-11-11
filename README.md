@@ -1,6 +1,6 @@
 # Wulo AI
 
-Pheli AI is an AI-powered video generation platform that transforms simple text prompts into cinematic videos, advertisements, social media content, product videos, and creative stories.
+Wulo AI is an AI-powered video generation platform that transforms simple text prompts into cinematic videos, advertisements, social media content, product videos, and creative stories.
 
 ## Features
 
