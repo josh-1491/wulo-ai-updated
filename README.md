@@ -1,4 +1,4 @@
-# Pheli AI
+# Wulo AI
 
 Pheli AI is an AI-powered video generation platform that transforms simple text prompts into cinematic videos, advertisements, social media content, product videos, and creative stories.
 
@@ -69,7 +69,7 @@ Clone the project:
 
 ```bash
 git clone YOUR_REPOSITORY_URL
-cd pheli-ai
+cd wulo-ai
 ```
 
 Run the project using a local development server:
@@ -84,7 +84,7 @@ Then open the local URL provided by the development server.
 
 # Video Generator
 
-Pheli AI accepts a text prompt describing the video the user wants to create.
+Wulo AI accepts a text prompt describing the video the user wants to create.
 
 Example:
 
@@ -143,7 +143,7 @@ Actual resolution availability depends on the AI video provider.
 
 # Video Generation API
 
-Pheli AI supports both immediate and asynchronous video generation.
+Wulo AI supports both immediate and asynchronous video generation.
 
 ## Immediate Generation
 
